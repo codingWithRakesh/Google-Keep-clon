@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import {API_URL} from '../constant/constants.js'
+import { API_URL } from '../constant/constants.js'
 
 export const useAuthStore = create((set) => ({
     user: null,
@@ -8,6 +8,23 @@ export const useAuthStore = create((set) => ({
     message: null,
     isCheakingAuth: true,
     isAuthenticated: false,
+    fetchAuth: async () => {
+        try {
+            const response = await fetch(`${API_URL}/currentuser`, {
+                method: 'GET',
+                credentials: 'include', // Ensures cookies are sent
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                set({ user: data.data.user, isAuthenticated: true });
+            } else {
+                set({ user: null, isAuthenticated: false });
+            }
+        } catch (error) {
+            set({ user: null, isAuthenticated: false });
+        }
+    },
     signUp: async (userName, email, fullName, password) => {
         set({ isLoading: true, error: null });
         try {

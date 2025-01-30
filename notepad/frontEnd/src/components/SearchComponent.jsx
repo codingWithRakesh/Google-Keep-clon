@@ -67,7 +67,6 @@ const SearchComponent = () => {
     }
   }
 
-  const [imageValue, setImageValue] = useState()
   const fetchImage = async () => {
     setHide((v) => !v)
     try {

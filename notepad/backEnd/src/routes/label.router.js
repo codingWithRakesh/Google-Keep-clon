@@ -5,8 +5,8 @@ import { verifyLogin } from "../middlewares/user.middleware.js"
 const router = Router()
 
 router.route("/createlabel").post(verifyLogin, createLabel)
-router.route("/updatelable").post(verifyLogin, updateLabel)
-router.route("/deletelable").post(verifyLogin, deleteLable)
+router.route("/updatelable").patch(verifyLogin, updateLabel)
+router.route("/deletelable").delete(verifyLogin, deleteLable)
 
 router.route("/label/:labelName").get(verifyLogin, lebelNotes)
 

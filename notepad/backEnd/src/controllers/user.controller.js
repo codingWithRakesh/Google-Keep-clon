@@ -69,6 +69,10 @@ const loginUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { user: loginUser, refereshToken, accessToken }, "login successfully"))
 })
 
+const currentUser = asyncHandler(async (req,res) => {
+    return res.status(200).json(new ApiResponse(200, req.user, "successfully"))
+})
+
 const logOutUser = asyncHandler(async (req, res) => {
     await User.findByIdAndUpdate(req.user._id, {
         $unset: {
@@ -105,6 +109,12 @@ const allNotes = asyncHandler(async (req, res) => {
                 foreignField: "owner",
                 as: "allNotes",
                 pipeline: [
+                    {
+                        $match : {
+                            isBin : false,
+                            isArchive : false 
+                        }
+                    },
                     {
                         $lookup: {
                             from: "labels",
@@ -450,4 +460,4 @@ const getNote = asyncHandler(async (req,res) => {
     return res.status(200).json(new ApiResponse(200,note,"successfully"))
 })
 
-export { registerUser, loginUser, logOutUser, allNotes, lebelNotes, deleteNotes, archiveNotes, allLabels, getNote }
+export { registerUser, loginUser, currentUser, logOutUser, allNotes, lebelNotes, deleteNotes, archiveNotes, allLabels, getNote }

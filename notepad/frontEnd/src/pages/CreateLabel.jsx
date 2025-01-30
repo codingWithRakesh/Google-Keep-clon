@@ -3,39 +3,43 @@ import { HiPencil } from 'react-icons/hi2'
 import { MdDelete, MdLabel, MdOutlineDone } from 'react-icons/md'
 import { RxCross2 } from 'react-icons/rx'
 import EditLabel from '../components/EditLabel'
-import {API_URL} from '../constant/constants.js'
+import {API_URL,API_Label} from '../constant/constants.js'
 import { useLabel } from '../contexts/EditLabel.context.jsx'
+import { useFetchLabel } from '../contexts/FetchLabel.context.jsx'
+import fetchNotes from '../utils/FetchLabels.jsx'
 
 const CreateLabel = () => {
+    const [valueLabel, setValueLabel] = useFetchLabel()
     const [isLabel, setIsLabel] = useLabel()
-    const [value, setValue] = useState(null);
 
     useEffect(() => {
-        const fetchNotes = async () => {
-            try {
-                const response = await fetch(`${API_URL}/alllabels`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch notes');
-                }
-
-                const data = await response.json();
-                console.log("create label ",data.data[0].allLabels)
-                setValue(data.data[0].allLabels);
-            } catch (error) {
-                console.error('Error fetching notes:', error.message);
-                throw error
-            }
-        };
-
-        fetchNotes();
+        fetchNotes(setValueLabel);
     }, []);
+
+    const [makeLabel, setMakeLabel] = useState("")
+    const makeLabelFun = async () => {
+        try {
+            const response = await fetch(`${API_Label}/createlabel`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body : JSON.stringify({"labelName" : makeLabel})
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch notes');
+            }
+
+            const data = await response.json();
+            console.log(data)
+            fetchNotes(setValueLabel);
+        } catch (error) {
+            console.error('Error fetching notes:', error.message);
+            throw error
+        }
+    }
 
     return (
 
@@ -46,11 +50,11 @@ const CreateLabel = () => {
                 </div>
                 <div className="nameLa w-full h-11 flex items-center justify-between">
                     <div className="deleteIc h-7 w-7 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]"><RxCross2 /></div>
-                    <input type="text" className='flex-1 mx-2 border-b border-[rgb(95,99,104)] outline-none bg-transparent text-[#E8EAED] text-[.8rem]' />
-                    <div className="tick h-7 w-7 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]"><MdOutlineDone /></div>
+                    <input name='labelName' value={makeLabel} onChange={(e)=>setMakeLabel(e.target.value)} type="text" className='flex-1 mx-2 border-b border-[rgb(95,99,104)] outline-none bg-transparent text-[#E8EAED] text-[.8rem]' />
+                    <div onClick={makeLabelFun} className="tick h-7 w-7 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]"><MdOutlineDone /></div>
                 </div>
                 {
-                    value?.map((v,i) => (
+                    valueLabel && valueLabel?.map((v,i) => (
                         <EditLabel item={v} key={i} />
                     ))
                 }

@@ -50,7 +50,7 @@ const Label = () => {
       <CreateNote />
 
       <div className="allContainer w-full min-h-screen mt-8">
-        {pinnedData?.length && <div className="pinContainer w-full min-h-0 flex flex-wrap content-start justify-center">
+        {pinnedData?.length > 0 && <div className="pinContainer w-full min-h-0 flex flex-wrap content-start justify-center">
           <div className={`titlePin ${view ? `w-full` : `w-[60%]`} h-8 flex justify-start items-center px-4 text-[.688rem] text-[#9AA0A6]`}>PINNED</div>
           <div className={`showPinBox ${view ? `columns-4` : `flex flex-wrap justify-center content-start`} w-full min-h-0 gap-4`}>
             {
@@ -61,7 +61,7 @@ const Label = () => {
           </div>
         </div>}
 
-        {notPinnedData?.length && <div className="notpinContainer w-full mt-10 min-h-0 flex flex-wrap content-start justify-center">
+        {notPinnedData?.length > 0 && <div className="notpinContainer w-full mt-10 min-h-0 flex flex-wrap content-start justify-center">
           <div className={`titlePin ${view ? `w-full` : `w-[60%]`} h-8 flex justify-start items-center px-4 text-[.688rem] text-[#9AA0A6]`}>OTHERS</div>
           <div className={`showPinBox ${view ? ` columns-4` : `flex flex-wrap justify-center content-start`} w-full min-h-0 gap-4`}>
             {

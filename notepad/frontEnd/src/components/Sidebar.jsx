@@ -6,39 +6,19 @@ import { HiOutlinePencil } from "react-icons/hi2";
 import { MdLabelOutline, MdOutlineLightbulb } from "react-icons/md";
 import NoteLi from './NoteLi';
 import { useSidebar } from '../contexts/Sidebar.context';
-import {API_URL} from '../constant/constants.js'
+import { useFetchLabel } from '../contexts/FetchLabel.context.jsx';
+import fetchNotes from '../utils/FetchLabels.jsx';
 
 const Sidebar = () => {
   const [isSidebar] = useSidebar()
-  const [value, setValue] = useState(null);
+  const [valueLabel, setValueLabel] = useFetchLabel()
+  
 
   useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const response = await fetch(`${API_URL}/alllabels`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        });
+    fetchNotes(setValueLabel);
+  }, [setValueLabel]);
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch notes');
-        }
-
-        const data = await response.json();
-        setValue(data.data[0].allLabels);
-      } catch (error) {
-        console.error('Error fetching notes:', error.message);
-        throw error
-      }
-    };
-
-    fetchNotes();
-  }, []);
-
-  let listNew = value?.map((data) => {
+  let listNew = valueLabel?.map((data) => {
     return {
       icon: <MdLabelOutline />,
       text : data.labelName,
