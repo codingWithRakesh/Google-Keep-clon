@@ -1,0 +1,111 @@
+.heightCon {
+  /* height: calc(100vh-10vh); */
+  height: calc(100vh - 3.5rem);
+}
+
+.heightConMin {
+  /* height: calc(100vh-10vh); */
+  min-height: calc(100vh - 3.5rem);
+}
+
+.widthMain {
+  width: calc(100% - 16rem);
+}
+
+.widthMainBig {
+  width: calc(100% - 5rem);
+}
+
+.centerAlignJustify {
+  align-items: center;
+  justify-content: center;
+}
+
+.centerItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bor {
+  border: 1px solid #9AA0A6;
+}
+
+.heightText {
+  height: calc(7.5rem - 2.25rem);
+}
+
+/* scroll */
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background: #202124;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e8eaed14;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.column4 {
+  column-width: auto;
+  column-count: 4;
+}
+
+.notesData {
+ overflow: hidden;
+}
+
+.truncate-text {
+  display: -webkit-box; /* Use a flexbox-like layout */
+  -webkit-box-orient: vertical; /* Set orientation to vertical */
+  -webkit-line-clamp: 2; /* Limit the text to 2 lines */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add the '...' for overflowed text */
+  line-height: 1.5; /* Adjust line height for better readability */
+  max-height: calc(1.5em * 2); /* Match max height to line-height * number of lines */
+}
+
+.truncate-text12 {
+  display: -webkit-box; /* Use a flexbox-like layout */
+  -webkit-box-orient: vertical; /* Set orientation to vertical */
+  -webkit-line-clamp: 12; /* Limit the text to 12 lines */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add the '...' for overflowed text */
+  line-height: 1.5; /* Adjust line height for better readability */
+  max-height: calc(1.5em * 12); /* Match max height to line-height * number of lines */
+}
+
+[aria-current="page"]{
+  background-color: #41331C;
+  color: #fff;
+}
+
+[aria-current="page"]:hover{
+  background-color: #41331C;
+}
+
+.placeholder::before {
+  content: attr(data-placeholder);
+  color: #aaa; /* Placeholder text color */
+  pointer-events: none;
+  position: absolute;
+}
+
+div[contenteditable="true"]:focus::before {
+  content: "";
+}
+
+
+.error-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: auto;
+  max-width: 300px;
+  z-index: 1000;
+}
