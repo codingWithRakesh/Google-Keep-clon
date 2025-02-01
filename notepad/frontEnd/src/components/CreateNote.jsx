@@ -8,9 +8,11 @@ import List from './List';
 import CreateNoteList from './CreateNoteList';
 import CreateNoteText from './CreateNoteText';
 import { useParams } from 'react-router-dom';
-import {API_NOTE} from '../constant/constants.js'
+import { API_NOTE } from '../constant/constants.js'
 import { useMainContainer } from '../contexts/FetchMainContainer.jsx';
 import fetchMainContainerNotes from '../utils/FetchMainContainer.jsx';
+import { useLabelNote } from '../contexts/FetchLabelNote.context.jsx';
+import fetchLabelsNotes from '../utils/FetchLabelsNote.jsx';
 
 const CreateNote = () => {
     const [check, setCheck] = useState(true);
@@ -21,13 +23,27 @@ const CreateNote = () => {
     const [titleV, setTitleV] = useState("")
     const [isArchiveV, setIsArchiveV] = useState(false)
     const [file, setFile] = useState(null)
+    const [imgSrc, setImgSrc] = useState(null);
     const [valueMain, setValueMain] = useMainContainer()
 
     const [clickList, setClickList] = useState(false);
-    const img = [imgD, imgD];
+    const [labelNoteValue, setLabelNoteValue, count, setCount] = useLabelNote()
     // console.log("value",value.split("\n"));
     // console.log("list",list)
     const paramsdata = useParams();
+
+    const resetForm = () => {
+        // Reset states including file so that the file input is re-enabled
+        setFile(null);
+        setImgSrc(null);
+        setTitleV("");
+        setValue("");
+        setList([]);
+        setListBoolean([]);
+        setIsPinV(false);
+        setIsArchiveV(false);
+        setCheck(true);
+    };
 
     const toogleListValue = () => {
         setClickList((v) => !v)
@@ -41,10 +57,26 @@ const CreateNote = () => {
     }
 
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+
+            const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+            if (!validImageTypes.includes(selectedFile.type)) {
+                console.error("only image allow")
+                e.target.value = "";
+                return;
+            }
+
+            setFile(selectedFile);
+            setImgSrc(URL.createObjectURL(selectedFile)); // Update the image preview immediately
+        }
     };
 
     const createNoteContent = async () => {
+        if (!titleV && !value && listBoolean.length == 0 && !file) {
+            setCheck((v) => !v)
+            return
+        }
         console.log("pin ", isPinV)
         console.log("title ", titleV)
         console.log("archive ", isArchiveV)
@@ -58,12 +90,12 @@ const CreateNote = () => {
         formData.append('isPin', isPinV)
         formData.append('isArchive', isArchiveV)
         formData.append('content', clickList ? "" : value)
-        formData.append('listContent', JSON.stringify(clickList ? list : [""]))
+        formData.append('listContent', JSON.stringify(clickList ? list : []))
         formData.append('listBoolean', JSON.stringify(clickList ? listBoolean.splice(0, list.length) : []))
         if (file) {
             formData.append('image', file);
         }
-        if(paramsdata.label){
+        if (paramsdata.label) {
             formData.append('labelName', paramsdata.label);
         }
 
@@ -83,8 +115,11 @@ const CreateNote = () => {
         } catch (error) {
             console.error('Error fetching notes:', error.message);
         }
-        setCheck((v) => !v)
         fetchMainContainerNotes(setValueMain)
+        if (paramsdata.label) {
+            fetchLabelsNotes(setLabelNoteValue, paramsdata.label)
+        }
+        resetForm()
     }
 
     return (
@@ -104,7 +139,7 @@ const CreateNote = () => {
                 <div className="writeNoteBox w-full overflow-hidden min-h-[7.5rem] flex flex-wrap content-between justify-center relative">
                     <div className="textCon w-full flex-1 px-[.2rem] overflow-y-auto relative">
                         <div className="imgBox flex flex-wrap justify-center items-center w-full min-h-0 sticky top-0 left-0">
-                            {/* {img.map((imgS, i) => (<img key={i} src={imgS} className={img.length === 4 ? "w-1/2 h-1/2 object-cover" : img.length === 3 ? "w-1/2 h-1/2 object-cover" : img.length === 2 ? "w-1/2 h-full object-cover" : "w-full h-full object-cover"} />))} */}
+                            {imgSrc && <img src={imgSrc} className="w-full h-full object-cover" />}
                         </div>
                         <div className="titleInputPin flex items-center justify-between h-11 w-full py-[.525rem] px-[.838rem] sticky top-0">
                             <input type="text" onChange={(v) => setTitleV(v.target.value)} value={titleV} placeholder='Title' className='bg-transparent flex-1 outline-none' name='title' />
@@ -130,7 +165,7 @@ const CreateNote = () => {
                         <div className="leftCon flex items-center gap-4">
                             <div className="insertImg h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                                 <label htmlFor="fileId" className='cursor-pointer'><MdOutlineImage /></label>
-                                <input type="file" onChange={handleFileChange} id='fileId' className='hidden' />
+                                <input type="file" onChange={handleFileChange} id='fileId' className='hidden' disabled={file !== null} />
                             </div>
                             <div onClick={() => setIsArchiveV((e) => !e)} className="setArchive h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                                 {isArchiveV ? <BiArchiveIn /> : <BiArchiveOut />}

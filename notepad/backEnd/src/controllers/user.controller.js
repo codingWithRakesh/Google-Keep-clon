@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from '../models/user.model.js'
 import { options } from "../constants.js";
 import mongoose from "mongoose";
+import { json } from "express";
 
 const accessAndRefreshTokenGenrator = async (usedId) => {
     try {
@@ -465,4 +466,77 @@ const getNote = asyncHandler(async (req,res) => {
     return res.status(200).json(new ApiResponse(200,note,"successfully"))
 })
 
-export { registerUser, loginUser, currentUser, logOutUser, allNotes, lebelNotes, deleteNotes, archiveNotes, allLabels, getNote }
+const searchData = asyncHandler(async (req,res) => {
+    const {searchValue} = req.body
+    const regex = new RegExp(`.*${searchValue}.*`, 'i');
+    const data = await User.aggregate([
+        {
+            $match : {
+                _id : new mongoose.Types.ObjectId(req.user._id)
+            }
+        },
+        {
+            $project : {
+                password: 0,
+                refreshToken: 0
+            }
+        },
+        {
+            $lookup : {
+                from : "keepnotes",
+                localField : "_id",
+                foreignField : "owner",
+                as : "note",
+                pipeline : [
+                    {
+                        $match : {
+                            $or : [
+                                {title: { $regex: regex }},
+                                {content : { $regex : regex}},
+                                {listContent : { $regex : regex}}
+                            ],
+                            isBin: false
+                        }
+                    },
+                    {
+                        $lookup : {
+                            from : "labels",
+                            localField : "labelId",
+                            foreignField : "_id",
+                            as : "label"
+                        }
+                    },
+                    {
+                        $addFields: {
+                            isLabel: {
+                                $cond: {
+                                    if: {
+                                        $gt: [{
+                                            $size: "$label"
+                                        }, 0]
+                                    },
+                                    then: true,
+                                    else: false
+                                }
+                            },
+                            labelName: {
+                                $first: "$label.labelName"
+                            }
+                        }
+                    },
+                    {
+                        $project : {
+                            label : 0
+                        }
+                    },
+                ]
+            }
+        }
+    ])
+    if(!data){
+        throw new ApiError(404,"not found")
+    }
+    res.status(200).json(new ApiResponse(200,data,"ok"))
+})
+
+export { registerUser, loginUser, currentUser, logOutUser, allNotes, lebelNotes, deleteNotes, archiveNotes, allLabels, getNote, searchData }

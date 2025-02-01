@@ -8,12 +8,16 @@ import { API_URL, API_NOTE } from '../constant/constants.js'
 import { Link } from 'react-router-dom'
 import { useView } from '../contexts/View.context.jsx'
 import ShowNote from './ShowNote.jsx'
+import { useHideTool } from '../contexts/HideSearchTools.context.jsx'
+import { useSearchNote } from '../contexts/FetchSearch.context.jsx'
 
 const SearchComponent = () => {
   const [isSidebar] = useSidebar()
   const [view] = useView()
-  const [hide, setHide] = useState(true)
+  const [hide, setHide] = useHideTool()
   const [value, setValue] = useState(null);
+  const [searchNoteValue, setSearchNoteValue] = useSearchNote()
+  console.log("searchNoteValue", searchNoteValue)
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -41,6 +45,7 @@ const SearchComponent = () => {
 
     fetchNotes();
   }, []);
+  
 
   const [searchValue, setSearchValue] = useState()
   const fetchList = async () => {
@@ -114,6 +119,7 @@ const SearchComponent = () => {
       throw error
     }
   }
+  console.log("searchValue", searchValue)
   return (
     <div className={`bg-[rgb(32,33,36)] pb-8 ${isSidebar ? `widthMainBig` : `widthMain`} heightConMin absolute right-0 top-14 flex flex-wrap content-start justify-center ${isSidebar ? `pl-28 pr-32` : `pl-7 pr-10`}`}>
       {hide && <> <div className="mt-8 mx-14 flex flex-col bg-[#28292c]">
@@ -152,6 +158,11 @@ const SearchComponent = () => {
       {!hide && <div className={`showPinBox mt-4 ${view ? `columns-4` : `flex flex-wrap justify-center content-start`} w-full min-h-0 gap-4`}>
         {
           searchValue?.map((item, index) => (
+            <ShowNote item={item} key={index} />
+          ))
+        }
+        {
+          searchValue === undefined && searchNoteValue?.map((item, index) => (
             <ShowNote item={item} key={index} />
           ))
         }

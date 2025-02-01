@@ -11,7 +11,9 @@ import { useView } from '../contexts/View.context.jsx'
 import { useProfile } from '../contexts/Profile.context.jsx'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSidebar } from '../contexts/Sidebar.context.jsx'
-import { use } from 'react'
+import { useSearchNote } from '../contexts/FetchSearch.context.jsx'
+import { useHideTool } from '../contexts/HideSearchTools.context.jsx'
+import { API_URL } from '../constant/constants.js'
 
 
 const Navbar = () => {
@@ -22,6 +24,50 @@ const Navbar = () => {
     const [isSidebar, setIsSidebar] = useSidebar()
     const inputRef = useRef(null)
     const [, setRerender] = useState(0)
+    const [, setSearchNoteValue] = useSearchNote()
+    const [searchV, setSearchV] = useState("")
+    const [hide, setHide] = useHideTool()
+
+    const fetchSearchData = async (e) => {
+        const newSearchValue = e.target.value;
+        if (e.target.value === "") {
+            setHide(true)
+            setSearchNoteValue(null)
+        }
+        if (newSearchValue === "") {
+            setHide(true);
+            setSearchNoteValue(null);
+        } else {
+            setHide(false);
+        }
+    
+        setSearchV(newSearchValue);
+    
+        console.log("searchV : ", newSearchValue);
+
+        try {
+            const response = await fetch(`${API_URL}/search`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body : JSON.stringify({"searchValue" : newSearchValue})
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch notes');
+            }
+
+            const data = await response.json();
+            console.log(data.data[0].note)
+            setSearchNoteValue(data.data[0].note);
+        } catch (error) {
+            console.log('Error fetching notes:', error.message);
+            throw error
+        }
+    }
+
     return (
         <div className='h-14 bg-[rgb(32,33,36)] border-b-[.2px] border-[rgb(95,99,104)] text-white flex justify-between w-full z-20 items-center px-3 fixed top-0 right-0'>
             <div className="logo flex centerAlignJustify">
@@ -38,26 +84,33 @@ const Navbar = () => {
                     <div className="searchIcon h-9 w-9 rounded-full flex centerAlignJustify hover:cursor-pointer hover:bg-[#e8eaed14] text-xl">
                         <IoMdSearch />
                     </div>
-                    <div onClick={()=>setCrose(true)} className="searchInput flex items-center h-11 w-[38rem]">
-                        <input ref={inputRef} type="text" placeholder='Search' className='w-full h-full bg-transparent bottom-0 outline-0 px-0 py-2' />
+                    <div onClick={() => {
+                        setCrose(true)
+                        if(!searchV){
+                            setHide(true)
+                        }
+                    }} className="searchInput flex items-center h-11 w-[38rem]">
+                        <input value={searchV} onChange={(e) => fetchSearchData(e)} ref={inputRef} type="text" placeholder='Search' className='w-full h-full bg-transparent bottom-0 outline-0 px-0 py-2' />
                     </div>
-                    <div onClick={()=>{
+                    <div onClick={() => {
                         navigate(-1)
                         setCrose(false)
                         inputRef.current.value = ''
-                        }} className={`clearInput h-9 w-9 rounded-full flex centerAlignJustify hover:cursor-pointer ${crose ? `hover:bg-[#e8eaed14]` : ``} text-xl`}>
-                         {crose && <RxCross2 />}
+                        setHide(false)
+                        setSearchV("")
+                    }} className={`clearInput h-9 w-9 rounded-full flex centerAlignJustify hover:cursor-pointer ${crose ? `hover:bg-[#e8eaed14]` : ``} text-xl`}>
+                        {crose && <RxCross2 />}
                     </div>
                 </div>
             </Link>
             <div className="controllers flex gap-2 items-center">
-                <div onClick={()=>setRerender((v) => v +1)} className="reload flex centerAlignJustify text-xl h-10 w-10 rounded-full hover:cursor-pointer hover:bg-[#e8eaed14] text-[#9AA0A6] hover:text-[#E8EAED]">
+                <div onClick={() => setRerender((v) => v + 1)} className="reload flex centerAlignJustify text-xl h-10 w-10 rounded-full hover:cursor-pointer hover:bg-[#e8eaed14] text-[#9AA0A6] hover:text-[#E8EAED]">
                     <IoReloadOutline />
                 </div>
                 <div onClick={() => setView((v) => !v)} className="listData flex centerAlignJustify text-xl h-10 w-10 rounded-full hover:cursor-pointer hover:bg-[#e8eaed14] hover:text-[#E8EAED] text-[#9AA0A6]">
                     {view ? <BsViewList /> : <RxDashboard />}
                 </div>
-                <div onClick={()=>setIsProfile((value) => !value)} className="profile flex centerAlignJustify text-xl h-10 w-10 rounded-full hover:cursor-pointer hover:bg-[#e8eaed14] hover:text-[#E8EAED] text-[#9AA0A6]">
+                <div onClick={() => setIsProfile((value) => !value)} className="profile flex centerAlignJustify text-xl h-10 w-10 rounded-full hover:cursor-pointer hover:bg-[#e8eaed14] hover:text-[#E8EAED] text-[#9AA0A6]">
                     <FaRegUser />
                 </div>
             </div>

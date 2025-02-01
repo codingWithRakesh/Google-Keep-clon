@@ -7,16 +7,10 @@ import { MdLabelOutline, MdOutlineLightbulb } from "react-icons/md";
 import NoteLi from './NoteLi';
 import { useSidebar } from '../contexts/Sidebar.context';
 import { useFetchLabel } from '../contexts/FetchLabel.context.jsx';
-import fetchNotes from '../utils/FetchLabels.jsx';
 
 const Sidebar = () => {
   const [isSidebar] = useSidebar()
-  const [valueLabel, setValueLabel] = useFetchLabel()
-  
-
-  useEffect(() => {
-    fetchNotes(setValueLabel);
-  }, [setValueLabel]);
+  const [valueLabel] = useFetchLabel()
 
   let listNew = valueLabel && valueLabel?.map((data) => {
     return {

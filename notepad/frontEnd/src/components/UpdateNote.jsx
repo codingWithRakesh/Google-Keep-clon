@@ -13,6 +13,12 @@ import { useFetchLabel } from '../contexts/FetchLabel.context'
 import { format } from 'date-fns';
 import { useMainContainer } from '../contexts/FetchMainContainer'
 import fetchMainContainerNotes from '../utils/FetchMainContainer'
+import { useLabelNote } from '../contexts/FetchLabelNote.context'
+import fetchLabelsNotes from '../utils/FetchLabelsNote'
+import { useArchive } from '../contexts/FetchArchive.context'
+import fetchArchiveNotes from '../utils/FetchArchive'
+import { useBin } from '../contexts/FetchBin.context'
+import fetchBinNotes from '../utils/FetchBin'
 
 const UpdateNote = () => {
     const [valueAPI, setValueAPI] = useState(null);
@@ -29,6 +35,10 @@ const UpdateNote = () => {
     const [title, setTitle] = useState("")
     const navigate = useNavigate();
     const [, setValueMain] = useMainContainer()
+
+    const [, setLabelNoteValue] = useLabelNote()
+    const [, setArchiveNote] = useArchive()
+    const [, setBinNote] = useBin()
 
     const fetchNotes = async () => {
         try {
@@ -93,6 +103,10 @@ const UpdateNote = () => {
 
             const data = await response.json();
             console.log('Fetched Archive data: ', data);
+            fetchMainContainerNotes(setValueMain)
+            if (valueAPI?.isLabel) {
+                fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
+            }
             navigate(-1)
         } catch (error) {
             console.error('Error fetching notes:', error.message);
@@ -116,6 +130,10 @@ const UpdateNote = () => {
 
             const data = await response.json();
             console.log('Fetched Archive data: ', data);
+            fetchArchiveNotes(setArchiveNote)
+            if (valueAPI?.isLabel) {
+                fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
+            }
             navigate(-1)
         } catch (error) {
             console.error('Error fetching notes:', error.message);
@@ -123,6 +141,7 @@ const UpdateNote = () => {
     }
 
     const inBin = async () => {
+        console.log("enter in inBin")
         try {
             const response = await fetch(`${API_NOTE}/binnote/${paramsdata.id}`, {
                 method: 'PATCH',
@@ -138,6 +157,14 @@ const UpdateNote = () => {
 
             const data = await response.json();
             console.log('Fetched Archive data: ', data);
+            fetchMainContainerNotes(setValueMain)
+            if (valueAPI?.isArchive) {
+                fetchArchiveNotes(setArchiveNote)
+            }
+            console.log("valueAPI?.isLabel ", valueAPI?.isLabel)
+            if (valueAPI?.isLabel) {
+                fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
+            }
             navigate(-1)
         } catch (error) {
             console.error('Error fetching notes:', error.message);
@@ -161,6 +188,7 @@ const UpdateNote = () => {
 
             const data = await response.json();
             console.log('Fetched Archive data: ', data);
+            fetchBinNotes(setBinNote)
             navigate(-1)
         } catch (error) {
             console.error('Error fetching notes:', error.message);
@@ -183,6 +211,7 @@ const UpdateNote = () => {
 
             const data = await response.json();
             console.log('Fetched Archive data: ', data);
+            fetchBinNotes(setBinNote)
             navigate(-1)
         } catch (error) {
             console.error('Error fetching notes:', error.message);
@@ -192,6 +221,14 @@ const UpdateNote = () => {
     const reUploadFile = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
+
+            const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+            if (!validImageTypes.includes(selectedFile.type)) {
+                console.error("only for image")
+                e.target.value = ""; // Reset file input
+                return;
+            }
+
             setFile(selectedFile);
         }
     }
@@ -222,6 +259,12 @@ const UpdateNote = () => {
             const data = await response.json();
             console.log('Fetched Archive data: ', data);
             fetchNotes();
+            if (valueAPI?.isArchive) {
+                fetchArchiveNotes(setArchiveNote)
+            }
+            if (valueAPI?.isLabel) {
+                fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
+            }
         } catch (error) {
             console.log('Error fetching notes:', error.message);
             throw error
@@ -247,7 +290,7 @@ const UpdateNote = () => {
         const updateOBJ = {
             title,
             content: clickList1 ? "" : value,
-            listContent: clickList1 ? list : [""],
+            listContent: clickList1 ? list : [],
             listBoolean: clickList1 ? listBoolean.splice(0, list.length) : [],
             isPin: isPinV
         }
@@ -273,8 +316,14 @@ const UpdateNote = () => {
         } catch (error) {
             console.error('Error fetching notes:', error.message);
         }
-        navigate(-1)
+        if (valueAPI?.isArchive) {
+            fetchArchiveNotes(setArchiveNote)
+        }
+        if (valueAPI?.isLabel) {
+            fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
+        }
         fetchMainContainerNotes(setValueMain)
+        navigate(-1)
     }
 
     const toogleListValue = () => {
@@ -306,6 +355,12 @@ const UpdateNote = () => {
             const data = await response.json();
             console.log('Fetched Archive data: ', data);
             fetchNotes();
+            if (valueAPI?.isArchive) {
+                fetchArchiveNotes(setArchiveNote)
+            }
+            if (valueAPI?.isLabel) {
+                fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
+            }
         } catch (error) {
             console.error('Error fetching notes:', error.message);
         }
@@ -338,7 +393,7 @@ const UpdateNote = () => {
                 <div className="leftCon flex items-center gap-4">
                     {!valueAPI?.isBin && <> <div className="insertImg h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                         <label htmlFor="fileId" className=' cursor-pointer'><MdOutlineImage /></label>
-                        <input type="file" id='fileId' onChange={reUploadFile} className=' hidden' />
+                        <input type="file" id='fileId' onChange={reUploadFile} className=' hidden' disabled={valueAPI?.image?.length >= 4} />
                     </div>
                         {valueAPI?.isArchive ? <div onClick={outArchive} className="setArchive h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                             <BiArchiveOut />

@@ -21,7 +21,20 @@ import { ProtectRoute, AuthenticatedUserRoute } from './utils/user.check.jsx'
 import LabelContextProvider from './contexts/EditLabel.context.jsx'
 import FetchLabelContextProvider from './contexts/FetchLabel.context.jsx'
 import FetchMainContextProvider from './contexts/FetchMainContainer.jsx'
+import FetchLabelNoteContextProvider from './contexts/FetchLabelNote.context.jsx'
+import FetchArchiveContextProvider from './contexts/FetchArchive.context.jsx'
+import FetchBinContextProvider from './contexts/FetchBin.context.jsx'
+import FetchSearchContextProvider from './contexts/FetchSearch.context.jsx'
+import HideToolContextProvider from './contexts/HideSearchTools.context.jsx'
 
+const noteShow = {
+  path: "NOTE/:id",
+  element: (
+    <BlurContainer>
+      <UpdateNote />
+    </BlurContainer>
+  ),
+}
 
 const router = createBrowserRouter([
   {
@@ -38,32 +51,47 @@ const router = createBrowserRouter([
             </ProtectRoute>
           </>
         ),
-        children: [
-          {
-            path: "note/:id",
-            element: (
-              <BlurContainer>
-                <UpdateNote />
-              </BlurContainer>
-            ),
-          }
-        ],
+        children: [noteShow],
       },
       {
         path: '/label/:label',
-        element: <Label />,
+        element: (
+          <>
+            <Label />
+            <Outlet />
+          </>
+        ),
+        children: [noteShow],
       },
       {
         path: '/archive',
-        element: <Archive />
+        element: (
+          <>
+            <Archive />
+            <Outlet />
+          </>
+        ),
+        children: [noteShow],
       },
       {
         path: '/trash',
-        element: <Bin />
+        element: (
+          <>
+            <Bin />
+            <Outlet />
+          </>
+        ),
+        children: [noteShow],
       },
       {
         path: '/search',
-        element: <SearchComponent />
+        element: (
+          <>
+            <SearchComponent />
+            <Outlet />
+          </>
+        ),
+        children: [noteShow],
       },
       {
         path: '/login',
@@ -91,18 +119,28 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <FetchMainContextProvider>
-      <FetchLabelContextProvider>
-        <LabelContextProvider>
-          <SidebarContextProvider>
-            <ProfileContextProvider>
-              <ViewContextProvider>
-                <RouterProvider router={router} />
-              </ViewContextProvider>
-            </ProfileContextProvider>
-          </SidebarContextProvider>
-        </LabelContextProvider>
-      </FetchLabelContextProvider>
-    </FetchMainContextProvider>
+    <HideToolContextProvider>
+      <FetchSearchContextProvider>
+        <FetchBinContextProvider>
+          <FetchArchiveContextProvider>
+            <FetchLabelNoteContextProvider>
+              <FetchMainContextProvider>
+                <FetchLabelContextProvider>
+                  <LabelContextProvider>
+                    <SidebarContextProvider>
+                      <ProfileContextProvider>
+                        <ViewContextProvider>
+                          <RouterProvider router={router} />
+                        </ViewContextProvider>
+                      </ProfileContextProvider>
+                    </SidebarContextProvider>
+                  </LabelContextProvider>
+                </FetchLabelContextProvider>
+              </FetchMainContextProvider>
+            </FetchLabelNoteContextProvider>
+          </FetchArchiveContextProvider>
+        </FetchBinContextProvider>
+      </FetchSearchContextProvider>
+    </HideToolContextProvider>
   </StrictMode>
 )

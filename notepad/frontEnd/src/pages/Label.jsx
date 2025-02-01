@@ -6,43 +6,31 @@ import { useSidebar } from '../contexts/Sidebar.context.jsx';
 import { useParams } from 'react-router-dom';
 import { API_URL } from '../constant/constants.js'
 import CreateNote from '../components/CreateNote.jsx';
+import { useLabelNote } from '../contexts/FetchLabelNote.context.jsx';
+import fetchLabelsNotes from '../utils/FetchLabelsNote.jsx';
 
 const Label = () => {
   const [view] = useView()
   const [isSidebar] = useSidebar()
   const paramsdata = useParams();
   console.log(paramsdata.label)
-  const [value, setValue] = useState(null);
+
+  const [labelNoteValue, setLabelNoteValue] = useLabelNote()
 
   useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const response = await fetch(`${API_URL}/label/${paramsdata.label}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch notes');
-        }
-
-        const data = await response.json();
-        console.log('Fetched data: ', data.data[0].allNotes);
-        setValue(data.data[0].allNotes);
-      } catch (error) {
-        console.error('Error fetching notes:', error.message);
-      }
-    };
-
-    fetchNotes();
+    fetchLabelsNotes(setLabelNoteValue, paramsdata.label)
   }, [paramsdata.label]);
 
-  const pinnedData = value?.filter((item) => item.isPin);
-  const notPinnedData = value?.filter((item) => !item.isPin);
-  console.log("notPinnedData ",notPinnedData?.length < 0)
+  // useEffect(() => {
+  //   fetchLabelsNotes(setLabelNoteValue, paramsdata.label)
+  // }, [])
+  
+  
+  console.log("setLabelNoteValue ", labelNoteValue)
+
+  const pinnedData = labelNoteValue?.filter((item) => item.isPin);
+  const notPinnedData = labelNoteValue?.filter((item) => !item.isPin);
+  console.log("notPinnedData ", notPinnedData?.length < 0)
   return (
     <div className={`bg-[rgb(32,33,36)] pb-8 ${isSidebar ? `widthMainBig` : `widthMain`} heightConMin absolute right-0 top-14 flex flex-wrap content-start justify-center ${isSidebar ? `pl-28 pr-32` : `pl-7 pr-10`}`}>
 

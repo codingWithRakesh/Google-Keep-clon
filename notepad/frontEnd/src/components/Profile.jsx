@@ -7,10 +7,12 @@ import { RxCross2 } from 'react-icons/rx';
 import { useProfile } from '../contexts/Profile.context';
 import { useAuthStore } from '../store/auth.store';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 const Profile = () => {
     const [, setIsProfile] = useProfile()
     const { isLoading, isCheckingAuth, user,logout } = useAuthStore()
+    const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
     // console.log("logout",user)
     // console.log(isCheckingAuth)
     const navigate = useNavigate()
@@ -35,7 +37,7 @@ const Profile = () => {
                 {user.email}
             </div>
             <div className="name text-xl">
-                Hi,{user.fullName}
+                Hi,{user.fullName} {cookies.myCookieName || 'Not Found'}
             </div>
             <button onClick={logOut} className='h-12 flex centerItem gap-2 min-w-16 hover:bg-[#1E201E] bg-[#181C14] rounded-xl px-4'>
                 <div>
