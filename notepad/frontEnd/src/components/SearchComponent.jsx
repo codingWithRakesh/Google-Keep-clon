@@ -116,7 +116,7 @@ const SearchComponent = () => {
   }
   return (
     <div className={`bg-[rgb(32,33,36)] pb-8 ${isSidebar ? `widthMainBig` : `widthMain`} heightConMin absolute right-0 top-14 flex flex-wrap content-start justify-center ${isSidebar ? `pl-28 pr-32` : `pl-7 pr-10`}`}>
-      {hide && <> <div className="mt-8 flex flex-col bg-[#28292c]">
+      {hide && <> <div className="mt-8 mx-14 flex flex-col bg-[#28292c]">
         <div className="h-9 w-full flex items-center justify-start px-2 text-sm text-[#E8EAED]">Types</div>
         <div className="w-full h-40 flex items-center justify-start">
           <div onClick={fetchList} className='relative border-2 border-[#28292c] h-[9.813rem] w-[9.813rem] bg-[rgb(138,180,248)] cursor-pointer centerItem text-4xl'>
@@ -134,8 +134,8 @@ const SearchComponent = () => {
         </div>
       </div>
 
-        <div className="mt-4 min-h-7 flex flex-col bg-[#28292c] w-[29.5rem]">
-          <div className="h-9 w-full flex items-center justify-start px-2 text-sm text-[#E8EAED]">Types</div>
+        <div className="mt-4 mx-14 min-h-7 flex flex-col bg-[#28292c] w-[29.5rem]">
+          <div className="h-9 w-full flex items-center justify-start px-2 text-sm text-[#E8EAED]">Labels</div>
           <div className="w-full min-h-40 flex  content-start justify-start flex-wrap">
             {
               value?.map((v, i) => (

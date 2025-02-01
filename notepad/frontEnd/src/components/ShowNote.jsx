@@ -1,5 +1,5 @@
 import React from "react";
-import { BiArchiveIn, BiRedo, BiUndo } from "react-icons/bi";
+import { BiArchiveIn, BiArchiveOut, BiRedo, BiUndo } from "react-icons/bi";
 import { BsPin, BsPinFill } from 'react-icons/bs';
 import { HiOutlinePencil } from "react-icons/hi2";
 import { MdDeleteForever, MdOutlineCheckBox, MdOutlineImage, MdOutlinePalette, MdRestoreFromTrash } from "react-icons/md";
@@ -9,13 +9,16 @@ import List from "./List.jsx";
 import { Link } from "react-router-dom";
 
 const ShowNote = ({ item }) => {
-    console.log(item.isBin)
-    const listCon = item.listContent?.map(v => v.split(",")).flat();
+    const result = item.listContent?.map((label, index) => ({
+        label,
+        isCheck: item?.listBoolean[index]
+    }));
+    console.log("result ",result)
     const [view] = useView();
     return (
         <Link to={`/note/${item._id}`} className={`notesData group ${view ? `w-full` : `w-[60%]`} flex flex-wrap justify-center content-between h-auto ${view ? `max-h-[32rem]` : `max-h-[42rem]`} min-h-24 border relative border-[rgb(95,99,104)] rounded-lg mb-4`}>
             <div className={`pin absolute top-2 right-1 h-8 w-8 z-10 centerItem pin text-[1.3rem] hover:cursor-pointer ${item.image.length ? `text-[#E8EAED] hover:text-[#9AA0A6]` : `text-[#9AA0A6] hover:text-[#E8EAED]`} opacity-0 group-hover:opacity-100 transition-opacity`}>
-                {item.image.length || !item.isPin ? <BsPin /> : <BsPinFill /> }
+                {item.image.length || !item.isPin ? <BsPin /> : <BsPinFill />}
             </div>
             <div className="images flex sticky flex-wrap items-center justify-center top-0 left-0 w-full">
                 {item.image?.map((imgS, i) => (
@@ -28,8 +31,8 @@ const ShowNote = ({ item }) => {
             <div className="noteContent overflow-hidden text-ellipsis line-clamp-10 py-3 text-[0.875rem] px-4 w-full min-h-12 max-h-72 text-[#E8EAED]">
                 {item.content && item.content}
                 {
-                    item.listContent && listCon.map((v,i) => (
-                        <List key={i} texts={v} isCheck={true} />
+                    (!item.content && item.listContent.length > 0) && result.map((v, i) => (
+                        <List key={i} texts={v.label} isCheck={v.isCheck} />
                     ))
                 }
             </div>
@@ -42,27 +45,30 @@ const ShowNote = ({ item }) => {
                 {!item.isBin ? (<><div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                     <MdOutlineImage />
                 </div>
-                <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                    <BiArchiveIn />
-                </div>
-                <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                    <MdOutlineCheckBox />
-                </div>
-                <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                    <MdOutlinePalette />
-                </div>
-                <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                    <HiOutlinePencil />
-                </div>
-                <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                    <RiDeleteBin6Line />
-                </div> </>) : ( <>
+                    {item?.isArchive ? <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <BiArchiveOut />
+                    </div> :
+                        <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                            <BiArchiveIn />
+                        </div>}
                     <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                    <MdDeleteForever />
-                </div>
-                <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                    <MdRestoreFromTrash />
-                </div> </>
+                        <MdOutlineCheckBox />
+                    </div>
+                    <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <MdOutlinePalette />
+                    </div>
+                    <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <HiOutlinePencil />
+                    </div>
+                    <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <RiDeleteBin6Line />
+                    </div> </>) : (<>
+                    <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <MdDeleteForever />
+                    </div>
+                    <div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <MdRestoreFromTrash />
+                    </div> </>
                 )}
             </div>
         </Link>

@@ -21,6 +21,7 @@ const Navbar = () => {
     const [crose, setCrose] = useState(false)
     const [isSidebar, setIsSidebar] = useSidebar()
     const inputRef = useRef(null)
+    const [, setRerender] = useState(0)
     return (
         <div className='h-14 bg-[rgb(32,33,36)] border-b-[.2px] border-[rgb(95,99,104)] text-white flex justify-between w-full z-20 items-center px-3 fixed top-0 right-0'>
             <div className="logo flex centerAlignJustify">
@@ -50,7 +51,7 @@ const Navbar = () => {
                 </div>
             </Link>
             <div className="controllers flex gap-2 items-center">
-                <div className="reload flex centerAlignJustify text-xl h-10 w-10 rounded-full hover:cursor-pointer hover:bg-[#e8eaed14] text-[#9AA0A6] hover:text-[#E8EAED]">
+                <div onClick={()=>setRerender((v) => v +1)} className="reload flex centerAlignJustify text-xl h-10 w-10 rounded-full hover:cursor-pointer hover:bg-[#e8eaed14] text-[#9AA0A6] hover:text-[#E8EAED]">
                     <IoReloadOutline />
                 </div>
                 <div onClick={() => setView((v) => !v)} className="listData flex centerAlignJustify text-xl h-10 w-10 rounded-full hover:cursor-pointer hover:bg-[#e8eaed14] hover:text-[#E8EAED] text-[#9AA0A6]">

@@ -20,6 +20,7 @@ import SidebarContextProvider from './contexts/Sidebar.context.jsx'
 import { ProtectRoute, AuthenticatedUserRoute } from './utils/user.check.jsx'
 import LabelContextProvider from './contexts/EditLabel.context.jsx'
 import FetchLabelContextProvider from './contexts/FetchLabel.context.jsx'
+import FetchMainContextProvider from './contexts/FetchMainContainer.jsx'
 
 
 const router = createBrowserRouter([
@@ -90,16 +91,18 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <FetchLabelContextProvider>
-      <LabelContextProvider>
-        <SidebarContextProvider>
-          <ProfileContextProvider>
-            <ViewContextProvider>
-              <RouterProvider router={router} />
-            </ViewContextProvider>
-          </ProfileContextProvider>
-        </SidebarContextProvider>
-      </LabelContextProvider>
-    </FetchLabelContextProvider>
+    <FetchMainContextProvider>
+      <FetchLabelContextProvider>
+        <LabelContextProvider>
+          <SidebarContextProvider>
+            <ProfileContextProvider>
+              <ViewContextProvider>
+                <RouterProvider router={router} />
+              </ViewContextProvider>
+            </ProfileContextProvider>
+          </SidebarContextProvider>
+        </LabelContextProvider>
+      </FetchLabelContextProvider>
+    </FetchMainContextProvider>
   </StrictMode>
 )

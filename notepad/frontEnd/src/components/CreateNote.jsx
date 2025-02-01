@@ -1,18 +1,27 @@
 import React, { useState, useRef } from 'react';
 import { MdOutlineImage, MdOutlinePalette, MdOutlineCheckBox, MdOutlineCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
-import { BsPin } from 'react-icons/bs';
-import { BiArchiveIn, BiRedo, BiUndo } from 'react-icons/bi';
+import { BsPin, BsPinFill } from 'react-icons/bs';
+import { BiArchiveIn, BiArchiveOut, BiRedo, BiUndo } from 'react-icons/bi';
 import imgD from "../assets/images/img.jpg";
 import cover from "../assets/images/cover.jpg";
 import List from './List';
 import CreateNoteList from './CreateNoteList';
 import CreateNoteText from './CreateNoteText';
 import { useParams } from 'react-router-dom';
+import {API_NOTE} from '../constant/constants.js'
+import { useMainContainer } from '../contexts/FetchMainContainer.jsx';
+import fetchMainContainerNotes from '../utils/FetchMainContainer.jsx';
 
 const CreateNote = () => {
     const [check, setCheck] = useState(true);
     const [value, setValue] = useState("");
     const [list, setList] = useState(value.split("\n"));
+    const [listBoolean, setListBoolean] = useState([])
+    const [isPinV, setIsPinV] = useState(false)
+    const [titleV, setTitleV] = useState("")
+    const [isArchiveV, setIsArchiveV] = useState(false)
+    const [file, setFile] = useState(null)
+    const [valueMain, setValueMain] = useMainContainer()
 
     const [clickList, setClickList] = useState(false);
     const img = [imgD, imgD];
@@ -20,6 +29,63 @@ const CreateNote = () => {
     // console.log("list",list)
     const paramsdata = useParams();
 
+    const toogleListValue = () => {
+        setClickList((v) => !v)
+        setListBoolean((v) => {
+            let boolArray = []
+            for (let i = 0; i < list.length; i++) {
+                boolArray.push(false)
+            }
+            return boolArray
+        })
+    }
+
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const createNoteContent = async () => {
+        console.log("pin ", isPinV)
+        console.log("title ", titleV)
+        console.log("archive ", isArchiveV)
+        console.log("content ", value)
+        console.log("listContent ", list)
+        console.log("listBoolean ", listBoolean)
+
+        const formData = new FormData();
+
+        formData.append('title', titleV);
+        formData.append('isPin', isPinV)
+        formData.append('isArchive', isArchiveV)
+        formData.append('content', clickList ? "" : value)
+        formData.append('listContent', JSON.stringify(clickList ? list : [""]))
+        formData.append('listBoolean', JSON.stringify(clickList ? listBoolean.splice(0, list.length) : []))
+        if (file) {
+            formData.append('image', file);
+        }
+        if(paramsdata.label){
+            formData.append('labelName', paramsdata.label);
+        }
+
+        try {
+            const response = await fetch(`${API_NOTE}/createnote/`, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch notes');
+            }
+
+            const data = await response.json();
+            console.log('Fetched Archive data: ', data);
+        } catch (error) {
+            console.error('Error fetching notes:', error.message);
+        }
+        setCheck((v) => !v)
+        fetchMainContainerNotes(setValueMain)
+    }
 
     return (
         <div
@@ -41,15 +107,15 @@ const CreateNote = () => {
                             {/* {img.map((imgS, i) => (<img key={i} src={imgS} className={img.length === 4 ? "w-1/2 h-1/2 object-cover" : img.length === 3 ? "w-1/2 h-1/2 object-cover" : img.length === 2 ? "w-1/2 h-full object-cover" : "w-full h-full object-cover"} />))} */}
                         </div>
                         <div className="titleInputPin flex items-center justify-between h-11 w-full py-[.525rem] px-[.838rem] sticky top-0">
-                            <input type="text" placeholder='Title' className='bg-transparent flex-1 outline-none' />
-                            <div className="ml-3 pinBox h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED]">
-                                <BsPin />
+                            <input type="text" onChange={(v) => setTitleV(v.target.value)} value={titleV} placeholder='Title' className='bg-transparent flex-1 outline-none' name='title' />
+                            <div onClick={() => setIsPinV((v) => !v)} className="ml-3 pinBox h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED]">
+                                {isPinV ? <BsPinFill /> : <BsPin />}
                             </div>
                         </div>
 
                         <div className=' w-full max-h-80 overflow-y-auto'>
                             {!clickList && <CreateNoteText valueInString={[value, setValue]} addInList={[list, setList]} />}
-                            {clickList && <CreateNoteList valueInList={[list, setList]} addInValue={[value, setValue]} />}
+                            {clickList && <CreateNoteList valueInList={[list, setList]} addInValue={[value, setValue]} valueInBooleanList={[listBoolean, setListBoolean]} />}
                         </div>
 
                     </div>
@@ -63,13 +129,13 @@ const CreateNote = () => {
                     <div className="toolCon w-full h-9 flex items-center justify-between px-2 bg-[rgb(32,33,36)] z-10 rounded-b-md sticky bottom-0">
                         <div className="leftCon flex items-center gap-4">
                             <div className="insertImg h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                                <label htmlFor="fileId" className=' cursor-pointer'><MdOutlineImage /></label>
-                                <input type="file" id='fileId' className=' hidden' />
+                                <label htmlFor="fileId" className='cursor-pointer'><MdOutlineImage /></label>
+                                <input type="file" onChange={handleFileChange} id='fileId' className='hidden' />
                             </div>
-                            <div className="setArchive h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                                <BiArchiveIn />
+                            <div onClick={() => setIsArchiveV((e) => !e)} className="setArchive h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                                {isArchiveV ? <BiArchiveIn /> : <BiArchiveOut />}
                             </div>
-                            <div onClick={() => setClickList((v) => !v)} className="listDat h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                            <div onClick={toogleListValue} className="listDat h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                                 <MdOutlineCheckBox />
                             </div>
                             <div className="colorPalet h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
@@ -84,7 +150,7 @@ const CreateNote = () => {
                             </div>
                         </div>
                         <div
-                            onClick={() => setCheck((v) => !v)}
+                            onClick={createNoteContent}
                             className="rightCancel mr-3 text-sm hover:cursor-pointer rounded centerItem text-center h-8 w-14 hover:bg-[#e8eaed14]"
                         >
                             Close

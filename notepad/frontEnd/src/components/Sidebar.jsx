@@ -18,7 +18,7 @@ const Sidebar = () => {
     fetchNotes(setValueLabel);
   }, [setValueLabel]);
 
-  let listNew = valueLabel?.map((data) => {
+  let listNew = valueLabel && valueLabel?.map((data) => {
     return {
       icon: <MdLabelOutline />,
       text : data.labelName,

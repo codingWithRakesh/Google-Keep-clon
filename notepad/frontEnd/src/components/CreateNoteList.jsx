@@ -2,12 +2,12 @@
 import React, { useRef, useState } from 'react'
 import { MdCheckBox, MdOutlineCheckBoxOutlineBlank } from 'react-icons/md';
 
-const CreateNoteList = ({valueInList,addInValue}) => {
+const CreateNoteList = ({valueInList,addInValue,valueInBooleanList}) => {
     const [divs, setDivs] = valueInList;
     const [value, setValue] = addInValue;
     const [activeIndex, setActiveIndex] = useState(null);
     const divRefs = useRef([]);
-    const [isthrough, setIsthrough] = useState([false])
+    const [isthrough, setIsthrough] = valueInBooleanList
     console.log("this is first ",divs)
 
     const setCursorToEnd = (el) => {
@@ -36,6 +36,15 @@ const CreateNoteList = ({valueInList,addInValue}) => {
                 }
                 setValue(updatedDivs.join("\n"));
                 return updatedDivs;
+            });
+
+            setIsthrough((prev) => {
+                const updated = [...prev];
+                if(updated[index] == undefined){
+                    updated[index] = false;
+                }
+                console.log("update",updated.join("\n"))
+                return updated;
             });
 
             setTimeout(() => {
@@ -143,14 +152,6 @@ const CreateNoteList = ({valueInList,addInValue}) => {
                     </div>
                 </div>
             ))}
-            {/* <div>
-                <h2>Stored Values:</h2>
-                <ul>
-                    {divs.map((value, index) => (
-                        <li key={index}>{value}</li>
-                    ))}
-                </ul>
-            </div> */}
         </>
     )
 }

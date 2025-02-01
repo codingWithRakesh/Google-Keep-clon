@@ -181,6 +181,11 @@ const lebelNotes = asyncHandler(async (req, res) => {
                 as: "allNotes",
                 pipeline: [
                     {
+                        $match : {
+                            isBin : false,
+                        }
+                    },
+                    {
                         $lookup: {
                             from: "labels",
                             localField: "labelId",

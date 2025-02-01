@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useView } from '../contexts/View.context.jsx'
 import ShowNote from '../components/ShowNote.jsx'
 import img from "../assets/images/img.jpg";
-import { data } from '../components/temp.js'
 import { useSidebar } from '../contexts/Sidebar.context.jsx';
 import { useParams } from 'react-router-dom';
 import { API_URL } from '../constant/constants.js'
@@ -61,7 +60,7 @@ const Label = () => {
           </div>
         </div>}
 
-        {notPinnedData?.length > 0 && <div className="notpinContainer w-full mt-10 min-h-0 flex flex-wrap content-start justify-center">
+        {notPinnedData?.length > 0 && <div className={`notpinContainer w-full ${pinnedData?.length > 0 ? `mt-10` : ``} min-h-0 flex flex-wrap content-start justify-center`}>
           <div className={`titlePin ${view ? `w-full` : `w-[60%]`} h-8 flex justify-start items-center px-4 text-[.688rem] text-[#9AA0A6]`}>OTHERS</div>
           <div className={`showPinBox ${view ? ` columns-4` : `flex flex-wrap justify-center content-start`} w-full min-h-0 gap-4`}>
             {

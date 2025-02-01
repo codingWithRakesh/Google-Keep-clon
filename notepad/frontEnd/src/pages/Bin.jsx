@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useView } from '../contexts/View.context'
 import ShowNote from '../components/ShowNote'
 import img from "../assets/images/img.jpg";
-import { data } from '../components/temp.js'
 import { useSidebar } from '../contexts/Sidebar.context.jsx';
 import { API_URL } from '../constant/constants.js'
 
@@ -46,14 +45,6 @@ const Bin = () => {
               <ShowNote item={v} key={i} />
             ))
           }
-          {/* <ShowNote content={data.fir} img={[img,img,img,img]} title="water"/>
-            <ShowNote content={data.five} title="pay"/>
-            <ShowNote content={data.four} img={[img]}/>
-            <ShowNote title="helo"/>
-            <ShowNote content={data.sec} img={[img,img]}/>
-            <ShowNote content={data.six} title="shajh"/>
-            <ShowNote/>
-            <ShowNote content={data.ther} title="sjhj" img={[img,img,img]}/> */}
         </div>
       </div>
     </div>

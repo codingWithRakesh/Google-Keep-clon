@@ -5,9 +5,37 @@ import { KeepNote } from '../models/keepNote.model.js'
 import { options } from "../constants.js";
 import { uploadOnCloudinary, deleteFromCloudinary, getPublicId } from "../utils/cloudinary.js"
 import mongoose from "mongoose";
+import {Label} from '../models/label.model.js'
 
 const createNote = asyncHandler(async (req, res) => {
-    const { title, content, listContent, listBoolean, isPin, labelId } = req.body
+    let { title, content, listContent, listBoolean, isPin, labelName, isArchive } = req.body
+
+    try {
+        if (typeof listContent === 'string') {
+            listContent = JSON.parse(listContent);
+        }
+    } catch (error) {
+        listContent = [];
+        throw new ApiError(506,error.message)
+    }
+
+    try {
+        if (typeof listBoolean === 'string') {
+            listBoolean = JSON.parse(listBoolean);
+        }
+    } catch (error) {
+        listBoolean = [];
+        throw new ApiError(506,error.message)
+    }
+
+    let labelId = null;
+    if (labelName) {
+        const labelCurrent = await Label.findOne({ labelName });
+        if (!labelCurrent) {
+            throw new ApiError(400, "Label not found");
+        }
+        labelId = labelCurrent._id;
+    }
 
     let image = [];
     if (req.file) {
@@ -24,11 +52,12 @@ const createNote = asyncHandler(async (req, res) => {
         title: title || "",
         content: content || "",
         listContent: listContent || [],
-        listBoolean : listBoolean || [],
+        listBoolean: listBoolean || [],
         isPin,
         image: image || [],
         owner: req.user._id,
-        labelId: labelId || null
+        labelId: labelId || null,
+        isArchive
     })
 
     if (!note) {
@@ -234,7 +263,7 @@ const getNote = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, note, "successfully"))
 })
 
-const getListSearch = asyncHandler(async (_,res) => {
+const getListSearch = asyncHandler(async (_, res) => {
     const searchList = await KeepNote.aggregate([
         {
             $match: {
@@ -276,20 +305,20 @@ const getListSearch = asyncHandler(async (_,res) => {
             }
         },
     ]);
-    if(!searchList){
-        throw new ApiError(404,"not found")
+    if (!searchList) {
+        throw new ApiError(404, "not found")
     }
-    return res.status(200).json(new ApiResponse(200,searchList,"successfully"))
+    return res.status(200).json(new ApiResponse(200, searchList, "successfully"))
 })
 
-const getImageSearch = asyncHandler(async (_,res) => {
+const getImageSearch = asyncHandler(async (_, res) => {
     const searchImage = await KeepNote.aggregate([
         {
-            $match : {
-                $expr : {
-                    $gt : [{ $size : "$image" }, 0]
+            $match: {
+                $expr: {
+                    $gt: [{ $size: "$image" }, 0]
                 },
-                isBin : false
+                isBin: false
             }
         },
         {
@@ -324,17 +353,17 @@ const getImageSearch = asyncHandler(async (_,res) => {
             }
         },
     ])
-    if(!searchImage){
-        throw new ApiError(404,"not found")
+    if (!searchImage) {
+        throw new ApiError(404, "not found")
     }
-    return res.status(200).json(new ApiResponse(200,searchImage,"successfully"))
+    return res.status(200).json(new ApiResponse(200, searchImage, "successfully"))
 })
 
-const getURLsearch = asyncHandler(async (_,res) => {
+const getURLsearch = asyncHandler(async (_, res) => {
     const searchURL = await KeepNote.aggregate([
-       {
+        {
             $match: {
-                isBin: false, 
+                isBin: false,
                 content: {
                     $type: "string",
                     $regex: "(https?:\\/\\/|www\\.|[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})",
@@ -374,10 +403,10 @@ const getURLsearch = asyncHandler(async (_,res) => {
             }
         },
     ])
-    if(!searchURL){
-        throw new ApiError(404,"not found")
+    if (!searchURL) {
+        throw new ApiError(404, "not found")
     }
-    return res.status(200).json(new ApiResponse(200,searchURL,"successfully"))
+    return res.status(200).json(new ApiResponse(200, searchURL, "successfully"))
 })
 
 export { createNote, updateTextNote, findNote, reUploadFileNote, deleteNote, binNote, restoreNote, deleteFile, archiveNote, restoreArchiveNote, getNote, getListSearch, getImageSearch, getURLsearch }
