@@ -13,6 +13,7 @@ import { useProfile } from './contexts/Profile.context'
 import { useLabel } from './contexts/EditLabel.context'
 import { useAuthStore } from './store/auth.store.js'
 import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   const [isProfile] = useProfile()
@@ -38,7 +39,7 @@ function App() {
         {isLabel && <BlurContainer>
           <CreateLabel />
         </BlurContainer>}
-
+        <ToastContainer />
       </div>
     </>
   )

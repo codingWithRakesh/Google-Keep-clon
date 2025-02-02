@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { API_URL } from '../constant/constants.js'
-import { handleSuccess } from '../components/ErrorMessage.jsx';
+import { handleError, handleSuccess } from '../components/ErrorMessage.jsx';
 
 export const useAuthStore = create((set) => ({
     user: null,
@@ -42,8 +42,10 @@ export const useAuthStore = create((set) => ({
             });
             const data = await response.json();
             set({ isLoading: false, user: data.data.user, isAuthenticated: true });
+            handleSuccess(data.message);
         } catch (error) {
             set({ isLoading: false, error: error.message });
+            handleError(error.message)
             throw error;
         }
     },
@@ -63,6 +65,7 @@ export const useAuthStore = create((set) => ({
             handleSuccess(data.message);
         } catch (error) {
             set({ isLoading: false, error: error.message });
+            handleError(error.message)
             throw error;
         }
     },
@@ -78,8 +81,10 @@ export const useAuthStore = create((set) => ({
             });
             const data = await response.json();
             set({ isLoading: false, user: null, isAuthenticated: false });
+            handleSuccess(data.message);
         } catch (error) {
             set({ isLoading: false, error: error.message });
+            handleError(error.message)
             throw error;
         }
     },

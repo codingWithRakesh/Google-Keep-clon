@@ -31,7 +31,9 @@ const noteShow = {
   path: "NOTE/:id",
   element: (
     <BlurContainer>
-      <UpdateNote />
+      <ProtectRoute>
+        <UpdateNote />
+      </ProtectRoute>
     </BlurContainer>
   ),
 }
@@ -57,8 +59,10 @@ const router = createBrowserRouter([
         path: '/label/:label',
         element: (
           <>
-            <Label />
-            <Outlet />
+            <ProtectRoute>
+              <Label />
+              <Outlet />
+            </ProtectRoute>
           </>
         ),
         children: [noteShow],
@@ -67,8 +71,10 @@ const router = createBrowserRouter([
         path: '/archive',
         element: (
           <>
-            <Archive />
-            <Outlet />
+            <ProtectRoute>
+              <Archive />
+              <Outlet />
+            </ProtectRoute>
           </>
         ),
         children: [noteShow],
@@ -77,8 +83,10 @@ const router = createBrowserRouter([
         path: '/trash',
         element: (
           <>
-            <Bin />
-            <Outlet />
+            <ProtectRoute>
+              <Bin />
+              <Outlet />
+            </ProtectRoute>
           </>
         ),
         children: [noteShow],
@@ -87,8 +95,10 @@ const router = createBrowserRouter([
         path: '/search',
         element: (
           <>
-            <SearchComponent />
-            <Outlet />
+            <ProtectRoute>
+              <SearchComponent />
+              <Outlet />
+            </ProtectRoute>
           </>
         ),
         children: [noteShow],

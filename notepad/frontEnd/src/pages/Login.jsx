@@ -38,7 +38,6 @@ const Login = () => {
                     {isLoading ? 'Loading...' : 'Login'}
                 </button>
             </form>
-            <ToastContainer />
         </>
     )
 }
