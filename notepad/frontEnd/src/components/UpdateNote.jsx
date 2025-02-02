@@ -19,6 +19,7 @@ import { useArchive } from '../contexts/FetchArchive.context'
 import fetchArchiveNotes from '../utils/FetchArchive'
 import { useBin } from '../contexts/FetchBin.context'
 import fetchBinNotes from '../utils/FetchBin'
+import { handleError } from './ErrorMessage'
 
 const UpdateNote = () => {
     const [valueAPI, setValueAPI] = useState(null);
@@ -230,8 +231,15 @@ const UpdateNote = () => {
 
             const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
             if (!validImageTypes.includes(selectedFile.type)) {
-                console.error("only for image")
-                e.target.value = ""; // Reset file input
+                handleError("only image allow")
+                e.target.value = "";
+                return;
+            }
+
+            const maxSizeInBytes = 4 * 1024 * 1024;
+            if (selectedFile.size > maxSizeInBytes) {
+                handleError("Image size must be less than 4 MB.")
+                e.target.value = "";
                 return;
             }
 
