@@ -38,7 +38,7 @@ const CreateNote = () => {
         setImgSrc(null);
         setTitleV("");
         setValue("");
-        setList([]);
+        setList(value.split("\n"));
         setListBoolean([]);
         setIsPinV(false);
         setIsArchiveV(false);
