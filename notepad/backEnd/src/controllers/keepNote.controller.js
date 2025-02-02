@@ -5,7 +5,7 @@ import { KeepNote } from '../models/keepNote.model.js'
 import { options } from "../constants.js";
 import { uploadOnCloudinary, deleteFromCloudinary, getPublicId } from "../utils/cloudinary.js"
 import mongoose from "mongoose";
-import {Label} from '../models/label.model.js'
+import { Label } from '../models/label.model.js'
 
 const createNote = asyncHandler(async (req, res) => {
     let { title, content, listContent, listBoolean, isPin, labelName, isArchive } = req.body
@@ -16,7 +16,7 @@ const createNote = asyncHandler(async (req, res) => {
         }
     } catch (error) {
         listContent = [];
-        throw new ApiError(506,error.message)
+        throw new ApiError(506, error.message)
     }
 
     try {
@@ -25,7 +25,7 @@ const createNote = asyncHandler(async (req, res) => {
         }
     } catch (error) {
         listBoolean = [];
-        throw new ApiError(506,error.message)
+        throw new ApiError(506, error.message)
     }
 
     let labelId = null;
@@ -39,8 +39,12 @@ const createNote = asyncHandler(async (req, res) => {
 
     let image = [];
     if (req.file) {
-        const imagePath = req.file?.path
-        const uploadedImage = await uploadOnCloudinary(imagePath);
+        const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+        if (!base64Image) {
+            throw new ApiError(500, "server error")
+        }
+
+        const uploadedImage = await uploadOnCloudinary(base64Image)
         image.push(uploadedImage?.url);
     }
 
@@ -101,9 +105,9 @@ const updateTextNote = asyncHandler(async (req, res) => {
 
 const reUploadFileNote = asyncHandler(async (req, res) => {
     const { id } = req.params
-    const imagePath = req.file?.path
+    // const imagePath = req.file?.path
 
-    if (!imagePath) {
+    if (!req.file) {
         throw new ApiError(400, "File missing")
     }
 
@@ -112,7 +116,12 @@ const reUploadFileNote = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Note not found")
     }
 
-    const image = await uploadOnCloudinary(imagePath)
+    const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    if (!base64Image) {
+        throw new ApiError(500, "server error")
+    }
+
+    const image = await uploadOnCloudinary(base64Image)
     if (!image.url) {
         throw new ApiError(400, "Error while uploading")
     }
