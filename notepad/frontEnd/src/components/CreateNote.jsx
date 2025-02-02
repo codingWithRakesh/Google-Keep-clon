@@ -13,6 +13,7 @@ import { useMainContainer } from '../contexts/FetchMainContainer.jsx';
 import fetchMainContainerNotes from '../utils/FetchMainContainer.jsx';
 import { useLabelNote } from '../contexts/FetchLabelNote.context.jsx';
 import fetchLabelsNotes from '../utils/FetchLabelsNote.jsx';
+import { handleError } from './ErrorMessage.jsx';
 
 const CreateNote = () => {
     const [check, setCheck] = useState(true);
@@ -67,7 +68,14 @@ const CreateNote = () => {
 
             const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
             if (!validImageTypes.includes(selectedFile.type)) {
-                console.error("only image allow")
+                handleError("only image allow")
+                e.target.value = "";
+                return;
+            }
+
+            const maxSizeInBytes = 4 * 1024 * 1024;
+            if (selectedFile.size > maxSizeInBytes) {
+                handleError("Image size must be less than 4 MB.")
                 e.target.value = "";
                 return;
             }
