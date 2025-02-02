@@ -232,14 +232,14 @@ const UpdateNote = () => {
             const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
             if (!validImageTypes.includes(selectedFile.type)) {
                 handleError("only image allow")
-                e.target.value = "";
+                event.target.value = "";
                 return;
             }
 
             const maxSizeInBytes = 4 * 1024 * 1024;
             if (selectedFile.size > maxSizeInBytes) {
                 handleError("Image size must be less than 4 MB.")
-                e.target.value = "";
+                event.target.value = "";
                 return;
             }
 
