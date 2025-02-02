@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/auth.store'
-import ErrorMessage from '../components/ErrorMessage';
+import { handleError, handleSuccess } from '../components/ErrorMessage.jsx';
+import { ToastContainer } from 'react-toastify';
 
 const Login = () => {
     const [value, setValue] = useState({
@@ -22,7 +23,10 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         await login(value.userName, value.password)
-        navigate('/')
+        console.log("login successfully")
+        setTimeout(() => {
+            navigate('/')
+        }, 1000)
     }
     return (
         <>
@@ -32,10 +36,10 @@ const Login = () => {
                 <input type="text" className='bg-[#374151] outline-none text-white px-2 w-full border border-gray-700 h-10 mt-4 rounded-md' placeholder='Username' name='userName' value={value.userName} onChange={handleChange} />
                 <input type="password" className='bg-[#374151] outline-none text-white px-2 border border-gray-700 w-full h-10 mt-4 rounded-md' placeholder='Password' name='password' value={value.password} onChange={handleChange} />
                 <button type='submit' className='bg-[#0891B2] w-full h-10 mt-4 rounded-md text-white'>
-                {isLoading ? 'Loading...' : 'Login'}
+                    {isLoading ? 'Loading...' : 'Login'}
                 </button>
             </form>
-            {error && <ErrorMessage message={error} onClose={() => {}} />}
+            <ToastContainer />
         </>
     )
 }

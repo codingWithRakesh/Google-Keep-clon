@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { MdOutlineImage, MdOutlinePalette, MdOutlineCheckBox, MdOutlineCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
+import { MdOutlineImage, MdOutlinePalette, MdOutlineCheckBox, MdOutlineCheckBoxOutlineBlank, MdCheckBox, MdDelete } from "react-icons/md";
 import { BsPin, BsPinFill } from 'react-icons/bs';
 import { BiArchiveIn, BiArchiveOut, BiRedo, BiUndo } from 'react-icons/bi';
 import imgD from "../assets/images/img.jpg";
@@ -56,6 +56,11 @@ const CreateNote = () => {
         })
     }
 
+    const deleteIMG = () => {
+        setFile(null);
+        setImgSrc(null);
+    }
+
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         if (selectedFile) {
@@ -77,12 +82,12 @@ const CreateNote = () => {
             setCheck((v) => !v)
             return
         }
-        console.log("pin ", isPinV)
-        console.log("title ", titleV)
-        console.log("archive ", isArchiveV)
-        console.log("content ", value)
-        console.log("listContent ", list)
-        console.log("listBoolean ", listBoolean)
+        // console.log("pin ", isPinV)
+        // console.log("title ", titleV)
+        // console.log("archive ", isArchiveV)
+        // console.log("content ", value)
+        // console.log("listContent ", list)
+        // console.log("listBoolean ", listBoolean)
 
         const formData = new FormData();
 
@@ -111,9 +116,10 @@ const CreateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched Archive data: ', data);
+            // console.log('Fetched Archive data: ', data);
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
+            throw error
         }
         fetchMainContainerNotes(setValueMain)
         if (paramsdata.label) {
@@ -139,7 +145,7 @@ const CreateNote = () => {
                 <div className="writeNoteBox w-full overflow-hidden min-h-[7.5rem] flex flex-wrap content-between justify-center relative">
                     <div className="textCon w-full flex-1 px-[.2rem] overflow-y-auto relative">
                         <div className="imgBox flex flex-wrap justify-center items-center w-full min-h-0 sticky top-0 left-0">
-                            {imgSrc && <img src={imgSrc} className="w-full h-full object-cover" />}
+                            {imgSrc && <div className="w-full h-full relative group" > <img src={imgSrc} className="w-full h-full object-cover" /> <div onClick={deleteIMG} className='h-8 w-8 bg-[rgba(0,0,0,.6)] absolute bottom-2 right-2 text-[#fff] centerItem rounded-sm cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity'> <MdDelete /> </div> </div>}
                         </div>
                         <div className="titleInputPin flex items-center justify-between h-11 w-full py-[.525rem] px-[.838rem] sticky top-0">
                             <input type="text" onChange={(v) => setTitleV(v.target.value)} value={titleV} placeholder='Title' className='bg-transparent flex-1 outline-none' name='title' />
@@ -173,14 +179,14 @@ const CreateNote = () => {
                             <div onClick={toogleListValue} className="listDat h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                                 <MdOutlineCheckBox />
                             </div>
-                            <div className="colorPalet h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
-                                <label htmlFor="colorId" className='cursor-pointer'><MdOutlinePalette /></label>
+                            <div className="colorPalet h-8 w-8 rounded-full centerItem hover:cursor-not-allowed text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                                <label htmlFor="colorId" className='cursor-not-allowed'><MdOutlinePalette /></label>
                                 <input type="color" id='colorId' className=' hidden' />
                             </div>
-                            <div className="undo h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                            <div className="undo h-8 w-8 rounded-full centerItem hover:cursor-not-allowed text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                                 <BiUndo />
                             </div>
-                            <div className="redo h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                            <div className="redo h-8 w-8 rounded-full centerItem hover:cursor-not-allowed text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                                 <BiRedo />
                             </div>
                         </div>

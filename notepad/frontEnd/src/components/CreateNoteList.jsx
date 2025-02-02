@@ -8,7 +8,7 @@ const CreateNoteList = ({valueInList,addInValue,valueInBooleanList}) => {
     const [activeIndex, setActiveIndex] = useState(null);
     const divRefs = useRef([]);
     const [isthrough, setIsthrough] = valueInBooleanList
-    console.log("this is first ",divs)
+    // console.log("this is first ",divs)
 
     const setCursorToEnd = (el) => {
         if (el) {
@@ -43,7 +43,7 @@ const CreateNoteList = ({valueInList,addInValue,valueInBooleanList}) => {
                 if(updated[index] == undefined){
                     updated[index] = false;
                 }
-                console.log("update",updated.join("\n"))
+                // console.log("update",updated.join("\n"))
                 return updated;
             });
 
@@ -76,7 +76,7 @@ const CreateNoteList = ({valueInList,addInValue,valueInBooleanList}) => {
 
     const handleInput = (index) => {
         const currentText = divRefs.current[index]?.textContent;
-        console.log(currentText);
+        // console.log(currentText);
         // setDivs((prev) => {
         //     const updatedDivs = [...prev];
         //     updatedDivs[index] = currentText;
@@ -86,13 +86,13 @@ const CreateNoteList = ({valueInList,addInValue,valueInBooleanList}) => {
     };
 
     const updatedDivs = (index) => {
-        console.log("enter inside update divs")
+        // console.log("enter inside update divs")
         const currentText = divRefs.current[index]?.textContent;
         setDivs((prev) => {
             prev[index] = currentText;
             setValue(prev.join("\n"));
-            console.log("aaaaaaa",prev.join("\n"))
-            console.log("value",value)
+            // console.log("aaaaaaa",prev.join("\n"))
+            // console.log("value",value)
             return prev;
         });
         // setDivs((value) => {
@@ -108,7 +108,7 @@ const CreateNoteList = ({valueInList,addInValue,valueInBooleanList}) => {
             const updated = [...prev];
             updated[index] = !updated[index];
             // setValue(updated.join("\n"));
-            console.log("update",updated.join("\n"))
+            // console.log("update",updated.join("\n"))
             return updated;
         });
     };

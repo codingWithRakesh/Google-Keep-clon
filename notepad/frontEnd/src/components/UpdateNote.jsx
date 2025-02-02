@@ -55,12 +55,12 @@ const UpdateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched data: ', data.data[0]);
+            // console.log('Fetched data: ', data.data[0]);
             setValueAPI(data.data[0]);
             const responseData = data.data[0]
 
             const listCon = responseData?.listContent?.map(v => v?.split(","))?.flat();
-            console.log("40 listCon ", listCon)
+            // console.log("40 listCon ", listCon)
             setTitle(responseData?.title)
             setIsPinV(responseData?.isPin)
             setListBoolean(responseData?.listBoolean)
@@ -71,8 +71,8 @@ const UpdateNote = () => {
                 setList(listCon || [""]);
             }
 
-            console.log("responseData.content ", responseData?.content)
-            console.log("45 value ", value)
+            // console.log("responseData.content ", responseData?.content)
+            // console.log("45 value ", value)
             if (responseData?.content) {
                 setClickList1(false)
             } else {
@@ -80,11 +80,12 @@ const UpdateNote = () => {
             }
             setApiCompleted(true)
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
+            throw error
         }
     };
 
-    console.log("content kjhadkhakhahdj ", valueAPI)
+    // console.log("content kjhadkhakhahdj ", valueAPI)
     // console.log("listContent",valueAPI?.listContent)
 
     const inArchive = async () => {
@@ -102,14 +103,15 @@ const UpdateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched Archive data: ', data);
+            // console.log('Fetched Archive data: ', data);
             fetchMainContainerNotes(setValueMain)
             if (valueAPI?.isLabel) {
                 fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
             }
             navigate(-1)
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
+            throw error
         }
     }
 
@@ -129,19 +131,20 @@ const UpdateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched Archive data: ', data);
+            // console.log('Fetched Archive data: ', data);
             fetchArchiveNotes(setArchiveNote)
             if (valueAPI?.isLabel) {
                 fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
             }
             navigate(-1)
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
+            throw error
         }
     }
 
     const inBin = async () => {
-        console.log("enter in inBin")
+        // console.log("enter in inBin")
         try {
             const response = await fetch(`${API_NOTE}/binnote/${paramsdata.id}`, {
                 method: 'PATCH',
@@ -156,18 +159,19 @@ const UpdateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched Archive data: ', data);
+            // console.log('Fetched Archive data: ', data);
             fetchMainContainerNotes(setValueMain)
             if (valueAPI?.isArchive) {
                 fetchArchiveNotes(setArchiveNote)
             }
-            console.log("valueAPI?.isLabel ", valueAPI?.isLabel)
+            // console.log("valueAPI?.isLabel ", valueAPI?.isLabel)
             if (valueAPI?.isLabel) {
                 fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
             }
             navigate(-1)
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
+            throw error
         }
     }
 
@@ -187,11 +191,12 @@ const UpdateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched Archive data: ', data);
+            // console.log('Fetched Archive data: ', data);
             fetchBinNotes(setBinNote)
             navigate(-1)
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
+            throw error
         }
     }
 
@@ -210,11 +215,12 @@ const UpdateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched Archive data: ', data);
+            // console.log('Fetched Archive data: ', data);
             fetchBinNotes(setBinNote)
             navigate(-1)
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
+            throw error
         }
     }
 
@@ -235,16 +241,17 @@ const UpdateNote = () => {
 
     const uploadSubmit = async () => {
         if (!file) {
-            console.log("Please select a file first!")
+            // console.log("Please select a file first!")
+            throw new Error("Please select a file first!")
         }
 
         const formData = new FormData();
         formData.append("image", file);
 
-        for (const pair of formData.entries()) {
-            console.log("realform data", pair[0], pair[1]);  // Log actual FormData content
-        }
-        console.log("real form data ", formData)
+        // for (const pair of formData.entries()) {
+        //     console.log("realform data", pair[0], pair[1]);  // Log actual FormData content
+        // }
+        // console.log("real form data ", formData)
         try {
             const response = await fetch(`${API_NOTE}/reuploadfile/${paramsdata.id}`, {
                 method: 'POST',
@@ -257,7 +264,7 @@ const UpdateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched Archive data: ', data);
+            // console.log('Fetched Archive data: ', data);
             fetchNotes();
             if (valueAPI?.isArchive) {
                 fetchArchiveNotes(setArchiveNote)
@@ -266,7 +273,7 @@ const UpdateNote = () => {
                 fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
             }
         } catch (error) {
-            console.log('Error fetching notes:', error.message);
+            // console.log('Error fetching notes:', error.message);
             throw error
         }
     }
@@ -281,11 +288,11 @@ const UpdateNote = () => {
 
     const updateAllValue = async () => {
 
-        console.log("title ", title)
-        console.log("content ", value)
-        console.log("listContent ", list)
-        console.log("listContentBoolean ", listBoolean)
-        console.log("ispin ", isPinV)
+        // console.log("title ", title)
+        // console.log("content ", value)
+        // console.log("listContent ", list)
+        // console.log("listContentBoolean ", listBoolean)
+        // console.log("ispin ", isPinV)
 
         const updateOBJ = {
             title,
@@ -294,7 +301,7 @@ const UpdateNote = () => {
             listBoolean: clickList1 ? listBoolean.splice(0, list.length) : [],
             isPin: isPinV
         }
-        console.log(updateOBJ)
+        // console.log(updateOBJ)
 
         try {
             const response = await fetch(`${API_NOTE}/updatetextnote/${paramsdata.id}`, {
@@ -311,10 +318,11 @@ const UpdateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched Archive data: ', data);
+            // console.log('Fetched Archive data: ', data);
             fetchNotes();
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
+            throw error
         }
         if (valueAPI?.isArchive) {
             fetchArchiveNotes(setArchiveNote)
@@ -353,7 +361,7 @@ const UpdateNote = () => {
             }
 
             const data = await response.json();
-            console.log('Fetched Archive data: ', data);
+            // console.log('Fetched Archive data: ', data);
             fetchNotes();
             if (valueAPI?.isArchive) {
                 fetchArchiveNotes(setArchiveNote)
@@ -362,7 +370,8 @@ const UpdateNote = () => {
                 fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
             }
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
+            throw error
         }
     }
 
@@ -404,19 +413,19 @@ const UpdateNote = () => {
                         <div onClick={toogleListValue} className="listDat h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                             <MdOutlineCheckBox />
                         </div>
-                        <div className="colorPalet h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <div className="colorPalet h-8 w-8 rounded-full centerItem hover:cursor-not-allowed text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                             <MdOutlinePalette />
                         </div>
                         <div onClick={inBin} className="colorPalet h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                             <RiDeleteBin6Line />
                         </div>
-                        <div className="colorPalet h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <div className="colorPalet h-8 w-8 rounded-full centerItem hover:cursor-not-allowed text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                             <HiOutlinePencil />
                         </div>
-                        <div className="undo h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <div className="undo h-8 w-8 rounded-full centerItem hover:cursor-not-allowed text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                             <BiUndo />
                         </div>
-                        <div className="redo h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
+                        <div className="redo h-8 w-8 rounded-full centerItem hover:cursor-not-allowed text-[1.1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                             <BiRedo />
                         </div> </>}
 

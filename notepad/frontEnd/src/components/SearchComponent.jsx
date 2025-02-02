@@ -17,7 +17,7 @@ const SearchComponent = () => {
   const [hide, setHide] = useHideTool()
   const [value, setValue] = useState(null);
   const [searchNoteValue, setSearchNoteValue] = useSearchNote()
-  console.log("searchNoteValue", searchNoteValue)
+  // console.log("searchNoteValue", searchNoteValue)
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -35,10 +35,10 @@ const SearchComponent = () => {
         }
 
         const data = await response.json();
-        console.log(data.data[0].allLabels)
+        // console.log(data.data[0].allLabels)
         setValue(data.data[0].allLabels);
       } catch (error) {
-        console.log('Error fetching notes:', error.message);
+        // console.log('Error fetching notes:', error.message);
         throw error
       }
     };
@@ -64,10 +64,10 @@ const SearchComponent = () => {
       }
 
       const data = await response.json();
-      console.log(data.data)
+      // console.log(data.data)
       setSearchValue(data.data);
     } catch (error) {
-      console.log('Error fetching notes:', error.message);
+      // console.log('Error fetching notes:', error.message);
       throw error
     }
   }
@@ -88,10 +88,10 @@ const SearchComponent = () => {
       }
 
       const data = await response.json();
-      console.log(data.data)
+      // console.log(data.data)
       setSearchValue(data.data);
     } catch (error) {
-      console.log('Error fetching notes:', error.message);
+      // console.log('Error fetching notes:', error.message);
       throw error
     }
   }
@@ -112,14 +112,14 @@ const SearchComponent = () => {
       }
 
       const data = await response.json();
-      console.log("url ",data.data)
+      // console.log("url ",data.data)
       setSearchValue(data.data);
     } catch (error) {
-      console.log('Error fetching notes:', error.message);
+      // console.log('Error fetching notes:', error.message);
       throw error
     }
   }
-  console.log("searchValue", searchValue)
+  // console.log("searchValue", searchValue)
   return (
     <div className={`bg-[rgb(32,33,36)] pb-8 ${isSidebar ? `widthMainBig` : `widthMain`} heightConMin absolute right-0 top-14 flex flex-wrap content-start justify-center ${isSidebar ? `pl-28 pr-32` : `pl-7 pr-10`}`}>
       {hide && <> <div className="mt-8 mx-14 flex flex-col bg-[#28292c]">

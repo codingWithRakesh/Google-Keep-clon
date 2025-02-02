@@ -13,7 +13,7 @@ const Label = () => {
   const [view] = useView()
   const [isSidebar] = useSidebar()
   const paramsdata = useParams();
-  console.log(paramsdata.label)
+  // console.log(paramsdata.label)
 
   const [labelNoteValue, setLabelNoteValue] = useLabelNote()
 
@@ -26,11 +26,11 @@ const Label = () => {
   // }, [])
   
   
-  console.log("setLabelNoteValue ", labelNoteValue)
+  // console.log("setLabelNoteValue ", labelNoteValue)
 
   const pinnedData = labelNoteValue?.filter((item) => item.isPin);
   const notPinnedData = labelNoteValue?.filter((item) => !item.isPin);
-  console.log("notPinnedData ", notPinnedData?.length < 0)
+  // console.log("notPinnedData ", notPinnedData?.length < 0)
   return (
     <div className={`bg-[rgb(32,33,36)] pb-8 ${isSidebar ? `widthMainBig` : `widthMain`} heightConMin absolute right-0 top-14 flex flex-wrap content-start justify-center ${isSidebar ? `pl-28 pr-32` : `pl-7 pr-10`}`}>
 

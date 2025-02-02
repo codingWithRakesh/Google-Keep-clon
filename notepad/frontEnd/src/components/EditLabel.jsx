@@ -13,7 +13,7 @@ const EditLabel = ({ item }) => {
 
     const deleteLabel = async () => {
         const { _id, labelName } = item
-        console.log(_id, labelName)
+        // console.log(_id, labelName)
 
         try {
             const response = await fetch(`${API_Label}/deletelable`, {
@@ -30,10 +30,10 @@ const EditLabel = ({ item }) => {
             }
 
             const data = await response.json();
-            console.log("create label ", data.data[0])
+            // console.log("create label ", data.data[0])
             fetchNotes(setValueLabel)
         } catch (error) {
-            console.log('Error fetching notes:', error.message);
+            // console.log('Error fetching notes:', error.message);
             throw error
         }
     }
@@ -59,7 +59,7 @@ const EditLabel = ({ item }) => {
             const data = await response.json();
             fetchNotes(setValueLabel)
         } catch (error) {
-            console.log('Error fetching notes:', error.message);
+            // console.log('Error fetching notes:', error.message);
             throw error
         }
     }

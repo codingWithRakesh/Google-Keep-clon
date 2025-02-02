@@ -43,7 +43,7 @@ const Navbar = () => {
     
         setSearchV(newSearchValue);
     
-        console.log("searchV : ", newSearchValue);
+        // console.log("searchV : ", newSearchValue);
 
         try {
             const response = await fetch(`${API_URL}/search`, {
@@ -60,10 +60,10 @@ const Navbar = () => {
             }
 
             const data = await response.json();
-            console.log(data.data[0].note)
+            // console.log(data.data[0].note)
             setSearchNoteValue(data.data[0].note);
         } catch (error) {
-            console.log('Error fetching notes:', error.message);
+            // console.log('Error fetching notes:', error.message);
             throw error
         }
     }

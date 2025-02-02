@@ -12,6 +12,7 @@ import { Outlet } from 'react-router-dom'
 import { useProfile } from './contexts/Profile.context'
 import { useLabel } from './contexts/EditLabel.context'
 import { useAuthStore } from './store/auth.store.js'
+import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
   const [isProfile] = useProfile()
@@ -33,10 +34,6 @@ function App() {
         </Suspense>
 
         {isProfile && <Profile />}
-
-        {/* <BlurContainer>
-          <UpdateNote />
-        </BlurContainer> */}
 
         {isLabel && <BlurContainer>
           <CreateLabel />

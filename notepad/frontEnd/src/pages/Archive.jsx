@@ -16,7 +16,7 @@ const Archive = () => {
     fetchArchiveNotes(setArchiveNote)
   }, []);
 
-  console.log("archiveNote", archiveNote)
+  // console.log("archiveNote", archiveNote)
   
   return (
     <div className={`bg-[rgb(32,33,36)] pb-8 ${isSidebar ? `widthMainBig` : `widthMain`} heightConMin absolute right-0 top-14 flex flex-wrap content-start justify-center ${isSidebar ? `pl-28 pr-32` : `pl-7 pr-10`}`}>

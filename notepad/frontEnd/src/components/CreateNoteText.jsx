@@ -4,8 +4,8 @@ import { use } from "react";
 const CreateNoteText = ({ valueInString,addInList,apiCompleted }) => {
   const [value, setValue] = valueInString;
   const [list, setList] = addInList;
-  console.log("enter inside create note text")
-  console.log("value",value)
+  // console.log("enter inside create note text")
+  // console.log("value",value)
   const [isCheck, setIsCheck] = useState(false)
   const divRef = useRef(null);
 
@@ -13,7 +13,7 @@ const CreateNoteText = ({ valueInString,addInList,apiCompleted }) => {
   useEffect(() => {
     const valueR = value.replace(/\n/g, "<div>") //.replace(/ /g, "&nbsp;");
     divRef.current.innerHTML = valueR;
-    console.log("valueR ", valueR)
+    // console.log("valueR ", valueR)
   }, [apiCompleted]);
 
   const handleInput = (e) => {
@@ -22,12 +22,12 @@ const CreateNoteText = ({ valueInString,addInList,apiCompleted }) => {
       .replace(/<\/div>/g, "")
       .replace(/<br>/g, "\n")
       .replace(/&nbsp;/g, " ");
-      console.log("nodeText",text)
+      // console.log("nodeText",text)
     setValue(text.trim());
 
     setList((text + " ").split("\n"));
-    console.log("list",list,"value",value)
-    console.log("value1 ",value.split("\n"))
+    // console.log("list",list,"value",value)
+    // console.log("value1 ",value.split("\n"))
 
   };
 

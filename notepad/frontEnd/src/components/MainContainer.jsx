@@ -23,7 +23,7 @@ const MainContainer = () => {
     fetchMainContainerNotes(setValueMain)
   }, []);
 
-  console.log("valueMain ",valueMain)
+  // console.log("valueMain ",valueMain)
   const pinnedData = valueMain && valueMain?.filter((item) => item.isPin);
   const notPinnedData = valueMain && valueMain?.filter((item) => !item.isPin);
 

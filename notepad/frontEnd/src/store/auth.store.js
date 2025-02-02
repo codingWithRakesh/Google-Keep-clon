@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { API_URL } from '../constant/constants.js'
+import { handleSuccess } from '../components/ErrorMessage.jsx';
 
 export const useAuthStore = create((set) => ({
     user: null,
@@ -59,6 +60,7 @@ export const useAuthStore = create((set) => ({
             const data = await response.json();
             console.log("data ", data);
             set({ isLoading: false, user: data.data.user, isAuthenticated: true });
+            handleSuccess(data.message);
         } catch (error) {
             set({ isLoading: false, error: error.message });
             console.error(error.message);

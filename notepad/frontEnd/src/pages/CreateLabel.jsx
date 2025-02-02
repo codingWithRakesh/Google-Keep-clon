@@ -33,10 +33,10 @@ const CreateLabel = () => {
             }
 
             const data = await response.json();
-            console.log(data)
+            // console.log(data)
             fetchNotes(setValueLabel);
         } catch (error) {
-            console.error('Error fetching notes:', error.message);
+            // console.error('Error fetching notes:', error.message);
             throw error
         }
     }

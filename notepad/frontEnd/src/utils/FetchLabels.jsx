@@ -15,10 +15,10 @@ const fetchNotes = async (setValueLabel) => {
         }
 
         const data = await response.json();
-        console.log("create label ", data.data[0].allLabels)
+        // console.log("create label ", data.data[0].allLabels)
         setValueLabel(data.data[0].allLabels);
     } catch (error) {
-        console.error('Error fetching notes:', error.message);
+        // console.error('Error fetching notes:', error.message);
         throw error
     }
 };
