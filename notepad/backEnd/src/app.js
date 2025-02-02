@@ -3,9 +3,9 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 
 const app = express()
-console.log("CORS_ORIGIN:", process.env.CORS_ORIGIN || "https://googlekeepclone-beryl.vercel.app/");
+console.log("CORS_ORIGIN:", process.env.CORS_ORIGIN || "http://localhost:5173/");
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || "https://googlekeepclone-beryl.vercel.app/",
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173/",
     credentials: true
 }))
 app.use(express.json())
