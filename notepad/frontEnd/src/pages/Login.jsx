@@ -9,7 +9,7 @@ const Login = () => {
         userName: '',
         password: ''
     })
-    const { login, isLoading, error, user } = useAuthStore()
+    const { login, isLoading } = useAuthStore()
     const navigate = useNavigate()
 
     const handleChange = (e) => {
@@ -23,7 +23,6 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         await login(value.userName, value.password)
-        console.log("login successfully")
         setTimeout(() => {
             navigate('/')
         }, 1000)

@@ -21,12 +21,12 @@ function App() {
 
   const { fetchAuth } = useAuthStore()
   useEffect(() => {
-    fetchAuth()
-  }, [])
+    fetchAuth();
+  }, [fetchAuth]);
 
   return (
     <>
-      <div className='w-full min-h-screen'>
+      <div className='w-full min-h-screen bg-[#202124]'>
         <Navbar />
         <Sidebar />
         <Suspense>

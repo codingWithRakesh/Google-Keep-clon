@@ -149,9 +149,10 @@ const CreateNote = () => {
                         </div>
                         <div className="titleInputPin flex items-center justify-between h-11 w-full py-[.525rem] px-[.838rem] sticky top-0">
                             <input type="text" onChange={(v) => setTitleV(v.target.value)} value={titleV} placeholder='Title' className='bg-transparent flex-1 outline-none' name='title' />
-                            <div onClick={() => setIsPinV((v) => !v)} className="ml-3 pinBox h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED]">
-                                {isPinV ? <BsPinFill /> : <BsPin />}
-                            </div>
+                        </div>
+
+                        <div onClick={() => setIsPinV((v) => !v)} className="ml-3 pinBox h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED] absolute top-2 right-2">
+                            {isPinV ? <BsPinFill /> : <BsPin />}
                         </div>
 
                         <div className=' w-full max-h-80 overflow-y-auto'>

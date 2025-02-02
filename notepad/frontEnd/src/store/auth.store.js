@@ -13,17 +13,20 @@ export const useAuthStore = create((set) => ({
         try {
             const response = await fetch(`${API_URL}/currentuser`, {
                 method: 'GET',
-                credentials: 'include', // Ensures cookies are sent
+                credentials: 'include',
             });
             const data = await response.json();
 
             if (response.ok) {
-                set({ user: data.data.user, isAuthenticated: true });
+                set({ user: data.data, isAuthenticated: true });
             } else {
                 set({ user: null, isAuthenticated: false });
             }
         } catch (error) {
             set({ user: null, isAuthenticated: false });
+            throw error
+        } finally {
+            set({ isCheakingAuth: false });
         }
     },
     signUp: async (userName, email, fullName, password) => {
@@ -38,11 +41,9 @@ export const useAuthStore = create((set) => ({
                 body: JSON.stringify({ userName, email, fullName, password }),
             });
             const data = await response.json();
-            console.log("data ", data);
             set({ isLoading: false, user: data.data.user, isAuthenticated: true });
         } catch (error) {
             set({ isLoading: false, error: error.message });
-            console.error(error.message);
             throw error;
         }
     },
@@ -58,12 +59,10 @@ export const useAuthStore = create((set) => ({
                 body: JSON.stringify({ userName, password }),
             });
             const data = await response.json();
-            console.log("data ", data);
             set({ isLoading: false, user: data.data.user, isAuthenticated: true });
             handleSuccess(data.message);
         } catch (error) {
             set({ isLoading: false, error: error.message });
-            console.error(error.message);
             throw error;
         }
     },
@@ -78,11 +77,9 @@ export const useAuthStore = create((set) => ({
                 credentials: 'include',
             });
             const data = await response.json();
-            console.log("data ", data);
             set({ isLoading: false, user: null, isAuthenticated: false });
         } catch (error) {
             set({ isLoading: false, error: error.message });
-            console.error(error.message);
             throw error;
         }
     },

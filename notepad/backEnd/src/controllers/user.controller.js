@@ -4,7 +4,6 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from '../models/user.model.js'
 import { options } from "../constants.js";
 import mongoose from "mongoose";
-import { json } from "express";
 
 const accessAndRefreshTokenGenrator = async (usedId) => {
     try {

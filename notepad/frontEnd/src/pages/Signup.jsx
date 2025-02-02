@@ -10,8 +10,7 @@ const Signup = () => {
     email: '',
     password: ''
   })
-  const { signUp, isLoading, error, user } = useAuthStore()
-  console.log(user)
+  const { signUp, isLoading } = useAuthStore()
   const navigate = useNavigate()
 
   const handleChange = (e) => {
@@ -20,12 +19,10 @@ const Signup = () => {
       ...prevState,
       [name]: value
     }))
-    console.log("form",value)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Form Data:', value) // Logs the current state of the form
     await signUp(value.userName, value.email, value.fullName, value.password)
     navigate('/login')
   }
