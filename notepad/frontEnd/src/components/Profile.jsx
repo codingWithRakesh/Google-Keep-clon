@@ -8,18 +8,25 @@ import { useProfile } from '../contexts/Profile.context';
 import { useAuthStore } from '../store/auth.store';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 const Profile = () => {
     const [, setIsProfile] = useProfile()
-    const { isLoading, isCheckingAuth, user,logout } = useAuthStore()
+    const { isCheckingAuth, user, logout,deleteAC } = useAuthStore()
     // console.log("logout",user)
     // console.log(isCheckingAuth)
     const navigate = useNavigate()
 
-    const logOut = async() => {
+    const logOut = async () => {
         setIsProfile((value) => !value)
         await logout()
         navigate('/login')
+    }
+
+    const deleteAccount = async () => {
+        setIsProfile((value) => !value)
+        await deleteAC(user._id)
+        navigate('/singup')
     }
     if (isCheckingAuth) {
         return <div>Loading...</div>
@@ -38,12 +45,20 @@ const Profile = () => {
             <div className="name text-xl">
                 Hi,{user.fullName}
             </div>
-            <button onClick={logOut} className='h-12 flex centerItem gap-2 min-w-16 hover:bg-[#1E201E] bg-[#181C14] rounded-xl px-4'>
-                <div>
-                    <MdLogout />
-                </div>
-                Logout
-            </button>
+            <div className="buttonsDiv flex items-center justify-center gap-2">
+                <button onClick={logOut} className='h-12 flex centerItem gap-2 min-w-16 hover:bg-[#1E201E] bg-[#181C14] rounded-tl-2xl rounded-bl-2xl px-4'>
+                    <div>
+                        <MdLogout />
+                    </div>
+                    Logout
+                </button>
+                <button onClick={deleteAccount} className='h-12 flex centerItem gap-2 min-w-16 hover:bg-[#1E201E] bg-[#181C14] rounded-tr-2xl rounded-br-2xl px-4'>
+                    <div>
+                        <RiDeleteBin6Line />
+                    </div>
+                    Delete
+                </button>
+            </div>
         </div>
     )
 }

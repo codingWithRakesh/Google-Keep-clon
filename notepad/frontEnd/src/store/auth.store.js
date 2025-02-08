@@ -88,4 +88,24 @@ export const useAuthStore = create((set) => ({
             throw error;
         }
     },
+    deleteAC: async (userId) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await fetch(`${API_URL}/deleteaccount`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ userId }),
+            });
+            const data = await response.json();
+            set({ isLoading: false, user: null, isAuthenticated: false });
+            handleSuccess(data.message);
+        } catch (error) {
+            set({ isLoading: false, error: error.message });
+            handleError(error.message)
+            throw error;
+        }
+    }
 }));

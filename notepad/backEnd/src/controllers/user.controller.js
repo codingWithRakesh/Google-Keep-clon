@@ -4,6 +4,8 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from '../models/user.model.js'
 import { options } from "../constants.js";
 import mongoose from "mongoose";
+import { KeepNote } from "../models/keepNote.model.js";
+import { Label } from "../models/label.model.js";
 
 const accessAndRefreshTokenGenrator = async (usedId) => {
     try {
@@ -69,7 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { user: loginUser, refereshToken, accessToken }, "login successfully"))
 })
 
-const currentUser = asyncHandler(async (req,res) => {
+const currentUser = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, req.user, "successfully"))
 })
 
@@ -110,9 +112,9 @@ const allNotes = asyncHandler(async (req, res) => {
                 as: "allNotes",
                 pipeline: [
                     {
-                        $match : {
-                            isBin : false,
-                            isArchive : false 
+                        $match: {
+                            isBin: false,
+                            isArchive: false
                         }
                     },
                     {
@@ -181,8 +183,8 @@ const lebelNotes = asyncHandler(async (req, res) => {
                 as: "allNotes",
                 pipeline: [
                     {
-                        $match : {
-                            isBin : false,
+                        $match: {
+                            isBin: false,
                         }
                     },
                     {
@@ -329,14 +331,14 @@ const archiveNotes = asyncHandler(async (req, res) => {
                         }
                     },
                     {
-                        
+
                         $lookup: {
                             from: "labels",
                             localField: "labelId",
                             foreignField: "_id",
                             as: "labels",
                         }
-                    },  
+                    },
                     {
                         $addFields: {
                             isLabel: {
@@ -356,8 +358,8 @@ const archiveNotes = asyncHandler(async (req, res) => {
                         }
                     },
                     {
-                        $project : {
-                            labels : 0
+                        $project: {
+                            labels: 0
                         }
                     },
                 ]
@@ -370,7 +372,7 @@ const archiveNotes = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, archiveData, "archive datas"))
 })
 
-const allLabels = asyncHandler(async(req,res) => {
+const allLabels = asyncHandler(async (req, res) => {
     const alllabels = await User.aggregate([
         {
             $match: {
@@ -379,57 +381,57 @@ const allLabels = asyncHandler(async(req,res) => {
         },
         {
             $project: {
-                userName : 1
+                userName: 1
             }
         },
         {
-            $lookup : {
-                from : "labels",
-                localField : "_id",
-                foreignField : "owner",
-                as : "allLabels"
+            $lookup: {
+                from: "labels",
+                localField: "_id",
+                foreignField: "owner",
+                as: "allLabels"
             }
         }
     ])
-    if(!alllabels){
-        throw new ApiError(404,"not found")
+    if (!alllabels) {
+        throw new ApiError(404, "not found")
     }
-    return res.status(200).json(new ApiResponse(200,alllabels,"successfully"))
+    return res.status(200).json(new ApiResponse(200, alllabels, "successfully"))
 })
 
-const getNote = asyncHandler(async (req,res) => {
+const getNote = asyncHandler(async (req, res) => {
     const { id } = req.params
-    console.log("id ",id,"req id ", req.user._id)
+    console.log("id ", id, "req id ", req.user._id)
     const note = await User.aggregate([
         {
-            $match : {
-                _id : new mongoose.Types.ObjectId(req.user._id)
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.user._id)
             }
         },
         {
-            $project : {
+            $project: {
                 password: 0,
                 refreshToken: 0
             }
         },
         {
-            $lookup : {
-                from : "keepnotes",
-                localField : "_id",
-                foreignField : "owner",
-                as : "note",
-                pipeline : [
+            $lookup: {
+                from: "keepnotes",
+                localField: "_id",
+                foreignField: "owner",
+                as: "note",
+                pipeline: [
                     {
-                        $match : {
-                            _id : new mongoose.Types.ObjectId(id)
+                        $match: {
+                            _id: new mongoose.Types.ObjectId(id)
                         }
                     },
                     {
-                        $lookup : {
-                            from : "labels",
-                            localField : "labelId",
-                            foreignField : "_id",
-                            as : "label"
+                        $lookup: {
+                            from: "labels",
+                            localField: "labelId",
+                            foreignField: "_id",
+                            as: "label"
                         }
                     },
                     {
@@ -451,58 +453,58 @@ const getNote = asyncHandler(async (req,res) => {
                         }
                     },
                     {
-                        $project : {
-                            label : 0
+                        $project: {
+                            label: 0
                         }
                     },
                 ]
             },
         }
     ])
-    if(!note){
-        throw new ApiError(404,"not found")
+    if (!note) {
+        throw new ApiError(404, "not found")
     }
-    return res.status(200).json(new ApiResponse(200,note,"successfully"))
+    return res.status(200).json(new ApiResponse(200, note, "successfully"))
 })
 
-const searchData = asyncHandler(async (req,res) => {
-    const {searchValue} = req.body
+const searchData = asyncHandler(async (req, res) => {
+    const { searchValue } = req.body
     const regex = new RegExp(`.*${searchValue}.*`, 'i');
     const data = await User.aggregate([
         {
-            $match : {
-                _id : new mongoose.Types.ObjectId(req.user._id)
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.user._id)
             }
         },
         {
-            $project : {
+            $project: {
                 password: 0,
                 refreshToken: 0
             }
         },
         {
-            $lookup : {
-                from : "keepnotes",
-                localField : "_id",
-                foreignField : "owner",
-                as : "note",
-                pipeline : [
+            $lookup: {
+                from: "keepnotes",
+                localField: "_id",
+                foreignField: "owner",
+                as: "note",
+                pipeline: [
                     {
-                        $match : {
-                            $or : [
-                                {title: { $regex: regex }},
-                                {content : { $regex : regex}},
-                                {listContent : { $regex : regex}}
+                        $match: {
+                            $or: [
+                                { title: { $regex: regex } },
+                                { content: { $regex: regex } },
+                                { listContent: { $regex: regex } }
                             ],
                             isBin: false
                         }
                     },
                     {
-                        $lookup : {
-                            from : "labels",
-                            localField : "labelId",
-                            foreignField : "_id",
-                            as : "label"
+                        $lookup: {
+                            from: "labels",
+                            localField: "labelId",
+                            foreignField: "_id",
+                            as: "label"
                         }
                     },
                     {
@@ -524,18 +526,39 @@ const searchData = asyncHandler(async (req,res) => {
                         }
                     },
                     {
-                        $project : {
-                            label : 0
+                        $project: {
+                            label: 0
                         }
                     },
                 ]
             }
         }
     ])
-    if(!data){
-        throw new ApiError(404,"not found")
+    if (!data) {
+        throw new ApiError(404, "not found")
     }
-    res.status(200).json(new ApiResponse(200,data,"ok"))
+    res.status(200).json(new ApiResponse(200, data, "ok"))
 })
 
-export { registerUser, loginUser, currentUser, logOutUser, allNotes, lebelNotes, deleteNotes, archiveNotes, allLabels, getNote, searchData }
+const deleteAccount = asyncHandler(async (req, res) => {
+    const { userId } = req.body;
+
+    if (!userId) {
+        throw new ApiError(400, "User ID is required");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    await KeepNote.deleteMany({ owner: userId });
+
+    await Label.deleteMany({ owner: userId });
+
+    await User.findByIdAndDelete(userId);
+
+    return res.status(200).json(new ApiResponse(200, {}, "User account deleted successfully"));
+})
+
+export { registerUser, loginUser, currentUser, logOutUser, allNotes, lebelNotes, deleteNotes, archiveNotes, allLabels, getNote, searchData, deleteAccount }

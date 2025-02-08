@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser, currentUser, logOutUser, allNotes, lebelNotes, deleteNotes, archiveNotes, allLabels, getNote, searchData } from "../controllers/user.controller.js"
+import { registerUser, loginUser, currentUser, logOutUser, allNotes, lebelNotes, deleteNotes, archiveNotes, allLabels, getNote, searchData, deleteAccount } from "../controllers/user.controller.js"
 import { verifyLogin } from "../middlewares/user.middleware.js"
 
 const router = Router()
@@ -21,5 +21,7 @@ router.route("/note/:id").get(verifyLogin, getNote)
 
 router.route("/search").post(verifyLogin, searchData)
 // router.route("/notes").get( allNotes)
+
+router.route("/deleteaccount").delete(verifyLogin, deleteAccount)
 
 export default router
