@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { MdOutlineImage, MdOutlinePalette, MdOutlineCheckBox, MdOutlineCheckBoxOutlineBlank, MdCheckBox, MdDelete } from "react-icons/md";
-import { BsPin, BsPinFill } from 'react-icons/bs';
+import { BsPin, BsPinFill, BsStars } from 'react-icons/bs';
 import { BiArchiveIn, BiArchiveOut, BiRedo, BiUndo } from 'react-icons/bi';
 import imgD from "../assets/images/img.jpg";
 import cover from "../assets/images/cover.jpg";
@@ -14,6 +14,7 @@ import fetchMainContainerNotes from '../utils/FetchMainContainer.jsx';
 import { useLabelNote } from '../contexts/FetchLabelNote.context.jsx';
 import fetchLabelsNotes from '../utils/FetchLabelsNote.jsx';
 import { handleError } from './ErrorMessage.jsx';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const CreateNote = () => {
     const [check, setCheck] = useState(true);
@@ -136,6 +137,21 @@ const CreateNote = () => {
         resetForm()
     }
 
+
+    const fetchResponse = async () => {
+        try {
+            const genAI = new GoogleGenerativeAI(import.meta.env.VITE_API_KEY);
+            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+            const prompt = `${value} Given the following text, generate a concise and compelling title in a single line that accurately represents its essence. The title should be engaging, informative, and suitable for an article, book, or presentation. max_tokens: 10`;
+            const result = await model.generateContent(prompt);
+            setTitleV(result.response.text());
+        } catch (error) {
+            console.error("Error generating AI response:", error);
+            setTitleV("Failed to get a response.");
+        }
+    };
+
     return (
         <div
             className="w-[37rem] mt-8 bg-[rgb(32,33,36)] border border-[rgb(95,99,104)] rounded-md text-[#E8EAED]">
@@ -157,7 +173,12 @@ const CreateNote = () => {
                         </div>
                         <div className="titleInputPin flex items-center justify-between h-11 w-full py-[.525rem] px-[.838rem] sticky top-0">
                             <input type="text" onChange={(v) => setTitleV(v.target.value)} value={titleV} placeholder='Title' className='bg-transparent flex-1 outline-none' name='title' />
+                            {value.length > 50 && <div onClick={fetchResponse} className={`ml-3 ${!imgSrc ? `mr-8` : ``} pinBox h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED]`}>
+                                <BsStars />
+                            </div>}
                         </div>
+
+
 
                         <div onClick={() => setIsPinV((v) => !v)} className="ml-3 pinBox h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED] absolute top-2 right-2">
                             {isPinV ? <BsPinFill /> : <BsPin />}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { BiArchiveIn, BiArchiveOut, BiRedo, BiUndo } from 'react-icons/bi'
-import { BsPin, BsPinFill } from 'react-icons/bs'
+import { BsPin, BsPinFill, BsStars } from 'react-icons/bs'
 import { HiOutlinePencil } from 'react-icons/hi2'
 import { MdDelete, MdDeleteForever, MdOutlineCheckBox, MdOutlineImage, MdOutlinePalette, MdOutlineUnarchive, MdRestoreFromTrash } from 'react-icons/md'
 import { RiDeleteBin6Line } from 'react-icons/ri'
@@ -20,6 +20,7 @@ import fetchArchiveNotes from '../utils/FetchArchive'
 import { useBin } from '../contexts/FetchBin.context'
 import fetchBinNotes from '../utils/FetchBin'
 import { handleError } from './ErrorMessage'
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const UpdateNote = () => {
     const [valueAPI, setValueAPI] = useState(null);
@@ -383,6 +384,21 @@ const UpdateNote = () => {
         }
     }
 
+    // const API_KEY = import.meta.env.VITE_API_KEY;
+    const fetchResponse = async () => {
+        try {
+            const genAI = new GoogleGenerativeAI(import.meta.env.VITE_API_KEY);
+            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+            const prompt = `${value} Given the following text, generate a concise and compelling title in a single line that accurately represents its essence. The title should be engaging, informative, and suitable for an article, book, or presentation. max_tokens: 10`;
+            const result = await model.generateContent(prompt);
+            setTitle(result.response.text());
+        } catch (error) {
+            console.error("Error generating AI response:", error);
+            setTitle("Failed to get a response.");
+        }
+    };
+
     return (
         <div className='w-[34rem] overflow-x-auto max-h-[32rem] flex flex-wrap justify-center content-between min-h-[10.5rem] bg-[rgb(32,33,36)] shadow-[inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07)] rounded-lg border relative border-[rgb(95,99,104)]'>
             {valueAPI?.image?.length > 0 && <div className="imgBox flex flex-wrap justify-center items-center w-full min-h-0 ">
@@ -390,6 +406,11 @@ const UpdateNote = () => {
             </div>}
             <div className="titleInputPin flex items-center justify-between h-11 w-full py-[.525rem] px-[.838rem]">
                 <input type="text" onChange={(e) => setTitle(e.target.value)} value={title} placeholder='Title' className='bg-transparent flex-1 outline-none text-[#E8EAED]' />
+
+                {value.length > 50 && <div onClick={fetchResponse} className={`ml-3 ${!valueAPI?.image?.length > 0 ? `mr-8` : ``} h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED] text-[#9AA0A6]`}>
+                    <BsStars />
+                </div>}
+
                 <div onClick={() => setIsPinV((v) => !v)} className="ml-3 h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED] text-[#9AA0A6] absolute right-2 top-2">
                     {!isPinV ? <BsPin /> : <BsPinFill />}
                 </div>

@@ -30,7 +30,7 @@ const ShowNote = ({ item }) => {
                     <img key={i} src={imgS} className={item.image?.length === 4 ? "w-1/2 h-1/2 object-cover" : item.image?.length === 3 ? "w-1/2 h-1/2 object-cover" : item.image?.length === 2 ? "w-1/2 h-full object-cover" : "w-full h-full object-cover"} />
                 ))}
             </div>
-            {item.title && <div className="noteTitle flex items-center justify-between font-bold pt-2 px-4 w-full text-[1rem] h-[2.375rem] sticky top-0 left-0 text-[#E8EAED]">
+            {item.title && <div className="noteTitle leading-relaxed flex items-center justify-between font-bold pt-2 px-4 w-full text-[1rem] min-h-[2.375rem] sticky top-0 left-0 text-[#E8EAED]">
                 <div className="flex-1">{item.title}</div>
             </div>}
             {(item.content || item.listContent.length > 0) && <div style={{ whiteSpace: 'pre-wrap' }} ref={contentRef} className="noteContent overflow-hidden text-ellipsis line-clamp-10 py-3 text-[0.875rem] px-4 w-full min-h-12 max-h-72 text-[#E8EAED]">
