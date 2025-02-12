@@ -38,7 +38,7 @@ const CreateNoteText = ({ valueInString,addInList,apiCompleted }) => {
     <div
       ref={divRef}
       contentEditable="true"
-      className={`pl-4 normalText overflow-auto w-full h-full outline-none ${value === "" ? `placeholder` : ``}`}
+      className={`px-4 normalText overflow-auto w-full h-full outline-none ${value === "" ? `placeholder` : ``}`}
       onInput={handleInput}
       suppressContentEditableWarning
       data-placeholder="Take a note..."
