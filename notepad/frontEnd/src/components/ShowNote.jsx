@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { BiArchiveIn, BiArchiveOut, BiRedo, BiUndo } from "react-icons/bi";
 import { BsPin, BsPinFill } from 'react-icons/bs';
 import { HiOutlinePencil } from "react-icons/hi2";
@@ -16,9 +16,16 @@ const ShowNote = ({ item }) => {
     const [view] = useView();
     const location = useLocation();
     const contentRef = useRef(null)
+
+    const contentRefNew = useRef(null)
+    useEffect(() => {
+        const valueR = item.content.replace(/\n/g, "<div>").replace('&lt;', "<").replace('&gt;', '>') //.replace(/ /g, "&nbsp;");
+        contentRefNew.current.innerHTML = valueR;
+        // console.log("valueR ", valueR)
+    }, [item]);
     // if (item.listContent.length == 0) {
-        // let valueR = item?.content?.replace(/\n/g, "</br>")
-        // contentRef.current.innerHTML = valueR
+    // let valueR = item?.content?.replace(/\n/g, "</br>")
+    // contentRef.current.innerHTML = valueR
     // }
     return (
         <Link to={`${location.pathname === "/" ? "" : location.pathname}/NOTE/${item._id}`} className={`notesData group ${view ? `w-full` : `w-[60%]`} flex flex-wrap justify-center content-between h-auto ${view ? `max-h-[32rem]` : `max-h-[42rem]`} min-h-24 border relative border-[rgb(95,99,104)] rounded-lg mb-4`}>
@@ -34,7 +41,9 @@ const ShowNote = ({ item }) => {
                 <div className="flex-1">{item.title}</div>
             </div>}
             {(item.content || item.listContent.length > 0) && <div style={{ whiteSpace: 'pre-wrap' }} ref={contentRef} className="noteContent overflow-hidden text-ellipsis line-clamp-10 py-3 text-[0.875rem] px-4 w-full min-h-12 max-h-72 text-[#E8EAED]">
-                {item.content && item.content}
+                <div ref={contentRefNew}>
+                    {item.content && item.content}
+                </div>
                 {
                     (!item.content && item.listContent.length > 0) && result.map((v, i) => (
                         <List key={i} texts={v.label} isCheck={v.isCheck} />
@@ -46,7 +55,7 @@ const ShowNote = ({ item }) => {
                     {item.labelName}
                 </div>
             </div>}
-            <div className={`${view ? `px-1` : `px-8`} pb-1 ${ (item.content || item.listContent.length > 0) ? `` : `mt-1`} noteController flex items-center ${!item.isBin ? `justify-between` : `justify-start`} w-full h-[2.125rem] sticky bottom-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity`}>
+            <div className={`${view ? `px-1` : `px-8`} pb-1 ${(item.content || item.listContent.length > 0) ? `` : `mt-1`} noteController flex items-center ${!item.isBin ? `justify-between` : `justify-start`} w-full h-[2.125rem] sticky bottom-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity`}>
                 {!item.isBin ? (<><div className="h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1rem] hover:text-[#E8EAED] text-[#9AA0A6]">
                     <MdOutlineImage />
                 </div>
