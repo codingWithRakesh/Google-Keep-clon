@@ -21,6 +21,7 @@ import { useBin } from '../contexts/FetchBin.context'
 import fetchBinNotes from '../utils/FetchBin'
 import { handleError } from './ErrorMessage'
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import loader from '../assets/loader/loader.gif'
 
 const UpdateNote = () => {
     const [valueAPI, setValueAPI] = useState(null);
@@ -41,6 +42,8 @@ const UpdateNote = () => {
     const [, setLabelNoteValue] = useLabelNote()
     const [, setArchiveNote] = useArchive()
     const [, setBinNote] = useBin()
+
+    const [loadingC, setLoadingC] = useState(false)
 
     const fetchNotes = async () => {
         try {
@@ -313,6 +316,7 @@ const UpdateNote = () => {
         // console.log(updateOBJ)
 
         try {
+            setLoadingC(true)
             const response = await fetch(`${API_NOTE}/updatetextnote/${paramsdata.id}`, {
                 method: 'PATCH',
                 headers: {
@@ -340,6 +344,7 @@ const UpdateNote = () => {
             fetchLabelsNotes(setLabelNoteValue, valueAPI?.labelName)
         }
         fetchMainContainerNotes(setValueMain)
+        setLoadingC(false)
         navigate(-1)
     }
 
@@ -465,12 +470,15 @@ const UpdateNote = () => {
                             <MdRestoreFromTrash />
                         </div></>}
                 </div>
-                <div
+                <button
+                    disabled={loadingC}
                     onClick={updateAllValue}
                     className="rightCancel mr-3 text-sm hover:cursor-pointer rounded centerItem text-[#DADCE0] text-center h-8 w-14 hover:bg-[#e8eaed14]"
                 >
-                    Close
-                </div>
+                    {!loadingC ? `Close`
+                    :
+                    <img src={loader} className="h-[200%] w-[150%] object-cover" />}
+                </button>
             </div>
         </div>
     )

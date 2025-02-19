@@ -15,6 +15,7 @@ import { useLabelNote } from '../contexts/FetchLabelNote.context.jsx';
 import fetchLabelsNotes from '../utils/FetchLabelsNote.jsx';
 import { handleError } from './ErrorMessage.jsx';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import loader from '../assets/loader/loader.gif'
 
 const CreateNote = () => {
     const [check, setCheck] = useState(true);
@@ -27,6 +28,7 @@ const CreateNote = () => {
     const [file, setFile] = useState(null)
     const [imgSrc, setImgSrc] = useState(null);
     const [valueMain, setValueMain] = useMainContainer()
+    const [loadingC, setLoadingC] = useState(false)
 
     const [clickList, setClickList] = useState(false);
     const [labelNoteValue, setLabelNoteValue, count, setCount] = useLabelNote()
@@ -114,6 +116,7 @@ const CreateNote = () => {
         }
 
         try {
+            setLoadingC(true)
             const response = await fetch(`${API_NOTE}/createnote/`, {
                 method: 'POST',
                 credentials: 'include',
@@ -135,6 +138,7 @@ const CreateNote = () => {
             fetchLabelsNotes(setLabelNoteValue, paramsdata.label)
         }
         resetForm()
+        setLoadingC(false)
     }
 
 
@@ -220,12 +224,16 @@ const CreateNote = () => {
                                 <BiRedo />
                             </div>
                         </div>
-                        <div
+                        <button
+                            disabled={loadingC}
                             onClick={createNoteContent}
-                            className="rightCancel mr-3 text-sm hover:cursor-pointer rounded centerItem text-center h-8 w-14 hover:bg-[#e8eaed14]"
+                            className=" rightCancel mr-3 text-sm hover:cursor-pointer rounded centerItem text-center h-8 w-14 hover:bg-[#e8eaed14]"
                         >
-                            Close
-                        </div>
+                            {!loadingC ? `Close`
+                            :
+                            <img src={loader} className="h-[200%] w-[150%] object-cover" />}
+
+                        </button>
                     </div>
                 </div>
             )}
