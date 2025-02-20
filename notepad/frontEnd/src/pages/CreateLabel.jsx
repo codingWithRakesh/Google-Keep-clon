@@ -35,10 +35,16 @@ const CreateLabel = () => {
             const data = await response.json();
             // console.log(data)
             fetchNotes(setValueLabel);
+            setMakeLabel("")
         } catch (error) {
             // console.error('Error fetching notes:', error.message);
             throw error
         }
+    }
+
+    const closeButton = () =>{
+        makeLabelFun()
+        setIsLabel((v) => !v)
     }
 
     return (
@@ -61,7 +67,7 @@ const CreateLabel = () => {
 
             </div>
             <div className="done w-full h-[4rem] flex items-center justify-end border-t py-4 px-3 border-[rgb(95,99,104)]">
-                <button onClick={() => setIsLabel((v) => !v)} className='h-9 w-[5.226rem] text-sm text-[#DADCE0] font-bold hover:bg-[#e8eaed14]'>
+                <button onClick={closeButton} className='h-9 w-[5.226rem] text-sm text-[#DADCE0] font-bold hover:bg-[#e8eaed14]'>
                     Done
                 </button>
             </div>

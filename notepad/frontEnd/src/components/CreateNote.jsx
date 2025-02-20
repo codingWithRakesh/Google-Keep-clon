@@ -231,7 +231,7 @@ const CreateNote = () => {
                         >
                             {!loadingC ? `Close`
                             :
-                            <img src={loader} className="h-[200%] w-[150%] object-cover" />}
+                            <img src={loader} className="h-7 w-7 " />}
 
                         </button>
                     </div>

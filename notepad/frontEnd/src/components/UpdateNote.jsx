@@ -473,11 +473,11 @@ const UpdateNote = () => {
                 <button
                     disabled={loadingC}
                     onClick={updateAllValue}
-                    className="rightCancel mr-3 text-sm hover:cursor-pointer rounded centerItem text-[#DADCE0] text-center h-8 w-14 hover:bg-[#e8eaed14]"
+                    className="rightCancel mr-3 text-sm hover:cursor-pointer rounded centerItem text-[#DADCE0] text-center h-8 min-w-14 hover:bg-[#e8eaed14]"
                 >
                     {!loadingC ? `Close`
                     :
-                    <img src={loader} className="h-[200%] w-[150%] object-cover" />}
+                    <img src={loader} className="h-7 w-7 " />}
                 </button>
             </div>
         </div>

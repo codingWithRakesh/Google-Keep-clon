@@ -19,9 +19,11 @@ const ShowNote = ({ item }) => {
 
     const contentRefNew = useRef(null)
     useEffect(() => {
-        const valueR = item.content.replace(/\n/g, "<div>").replace('&lt;', "<").replace('&gt;', '>') //.replace(/ /g, "&nbsp;");
-        contentRefNew.current.innerHTML = valueR;
-        // console.log("valueR ", valueR)
+        if (contentRefNew.current) {
+            const valueR = item.content.replace(/\n/g, "<div>").replace('&lt;', "<").replace('&gt;', '>');
+            contentRefNew.current.innerHTML = valueR;
+            // console.log("valueR ", contentRefNew.current.innerHTML);
+        }
     }, [item]);
     // if (item.listContent.length == 0) {
     // let valueR = item?.content?.replace(/\n/g, "</br>")
