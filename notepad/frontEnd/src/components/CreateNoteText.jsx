@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { use } from "react";
 
-const CreateNoteText = ({ valueInString,addInList,apiCompleted }) => {
+const CreateNoteText = ({ valueInString,addInList,apiCompleted,isBin }) => {
   const [value, setValue] = valueInString;
   const [list, setList] = addInList;
   // console.log("enter inside create note text")
@@ -37,7 +37,7 @@ const CreateNoteText = ({ valueInString,addInList,apiCompleted }) => {
 
     <div
       ref={divRef}
-      contentEditable="true"
+      contentEditable={!isBin}
       className={`px-4 normalText overflow-auto w-full h-full outline-none ${value === "" ? `placeholder` : ``}`}
       onInput={handleInput}
       suppressContentEditableWarning

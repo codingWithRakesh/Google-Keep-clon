@@ -410,19 +410,19 @@ const UpdateNote = () => {
                 {valueAPI.image?.map((imgS, i) => (<div key={i} className={valueAPI.image?.length === 4 ? "w-1/2 h-1/2 centerItem relative group" : valueAPI.image?.length === 3 ? "w-1/2 h-1/2 centerItem relative group" : valueAPI.image?.length === 2 ? "w-1/2 h-full centerItem relative group" : "w-full h-full centerItem relative group"} > <img src={imgS} className='h-full w-full object-cover' /> <div onClick={() => deleteFile(imgS)} className='h-8 w-8 bg-[rgba(0,0,0,.6)] absolute bottom-2 right-2 text-[#fff] centerItem rounded-sm cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity'> <MdDelete /> </div> </div>))}
             </div>}
             <div className="titleInputPin flex items-center justify-between h-11 w-full py-[.525rem] px-[.838rem]">
-                <input type="text" onChange={(e) => setTitle(e.target.value)} value={title} placeholder='Title' className='bg-transparent flex-1 outline-none text-[#E8EAED]' />
+                <input type="text" onChange={(e) => setTitle(e.target.value)} value={title} placeholder='Title' className='bg-transparent flex-1 outline-none text-[#E8EAED]' disabled={valueAPI?.isBin} />
 
-                {value.length > 50 && <div onClick={fetchResponse} className={`ml-3 ${!valueAPI?.image?.length > 0 ? `mr-8` : ``} h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED] text-[#9AA0A6]`}>
+                {(value.length > 50 && !valueAPI?.isBin) && <div onClick={fetchResponse} className={`ml-3 ${!valueAPI?.image?.length > 0 ? `mr-8` : ``} h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED] text-[#9AA0A6]`}>
                     <BsStars />
                 </div>}
 
-                <div onClick={() => setIsPinV((v) => !v)} className="ml-3 h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED] text-[#9AA0A6] absolute right-2 top-2">
+                {!valueAPI?.isBin && <div onClick={() => setIsPinV((v) => !v)} className="ml-3 h-8 w-8 rounded-full centerItem hover:cursor-pointer hover:bg-[#e8eaed14] text-[1.3rem] hover:text-[#E8EAED] text-[#9AA0A6] absolute right-2 top-2">
                     {!isPinV ? <BsPin /> : <BsPinFill />}
-                </div>
+                </div>}
             </div>
             <div className="outline-none flex flex-wrap justify-start items-start content min-h-8 mt-1 mb-2 w-full text-[#E8EAED]">
-                {!clickList1 && <CreateNoteText valueInString={[value, setValue]} addInList={[list, setList]} apiCompleted={apiCompleted} />}
-                {clickList1 && <CreateNoteList valueInList={[list, setList]} addInValue={[value, setValue]} valueInBooleanList={[listBoolean, setListBoolean]} />}
+                {!clickList1 && <CreateNoteText valueInString={[value, setValue]} addInList={[list, setList]} apiCompleted={apiCompleted} isBin={valueAPI?.isBin} />}
+                {clickList1 && <CreateNoteList valueInList={[list, setList]} addInValue={[value, setValue]} valueInBooleanList={[listBoolean, setListBoolean]} isBin={valueAPI?.isBin} />}
             </div>
             <div className="timeIng w-full h-9 flex items-center justify-between px-3">
                 <div className={`min-h-5 px-2 py-1 rounded-3xl w-auto centerItem text-[11px] text-[#E8EAED] ${valueAPI?.isLabel ? `border border-[rgb(95,99,104)]` : ``}`}>

@@ -2,7 +2,7 @@
 import React, { useRef, useState } from 'react'
 import { MdCheckBox, MdOutlineCheckBoxOutlineBlank } from 'react-icons/md';
 
-const CreateNoteList = ({valueInList,addInValue,valueInBooleanList}) => {
+const CreateNoteList = ({valueInList,addInValue,valueInBooleanList,isBin}) => {
     const [divs, setDivs] = valueInList;
     const [value, setValue] = addInValue;
     const [activeIndex, setActiveIndex] = useState(null);
@@ -134,7 +134,7 @@ const CreateNoteList = ({valueInList,addInValue,valueInBooleanList}) => {
                         <div
                             ref={(el) => (divRefs.current[index] = el)}
                             className={`wriData flex-1 ${isthrough[index] ? `line-through` : ``} sticky w-full overflow-auto outline-none top-0 right-0`}
-                            contentEditable="true"
+                            contentEditable={!isBin}
                               tabIndex={0}
                             suppressContentEditableWarning
                             onKeyDown={(e) => handleKeyDown(e, index)}
