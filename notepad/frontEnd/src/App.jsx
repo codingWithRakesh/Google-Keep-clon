@@ -28,6 +28,7 @@ function App() {
   return (
     <>
       <div className='w-full min-h-screen bg-[#202124]'>
+        
         <Navbar />
         <Sidebar />
         <Suspense>
